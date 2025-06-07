@@ -249,7 +249,7 @@ const PricingAnchorage: React.FC<{ userScore: number }> = ({ userScore }) => {
   return (
     <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8">
       <div className="text-center">
-        <div className="text-sm text-white/80 mb-2">{currentText}</div>
+        <div className="text-sm text-text_secondary mb-2">{currentText}</div>
         <AnimatePresence mode="wait">
           <motion.div
             key={currentPrice}
@@ -258,7 +258,7 @@ const PricingAnchorage: React.FC<{ userScore: number }> = ({ userScore }) => {
             exit={{ opacity: 0, y: -20 }}
             className="space-y-3"
           >
-            <div className={`text-4xl font-bold ${showFinalPrice ? 'text-yellow-300' : 'text-white/70 line-through'}`}>
+            <div className={`text-4xl font-bold ${showFinalPrice ? 'text-accent' : 'text-text_secondary line-through'}`}>
               R$ {currentPrice.toFixed(2).replace('.', ',')}
             </div>
             
@@ -266,7 +266,7 @@ const PricingAnchorage: React.FC<{ userScore: number }> = ({ userScore }) => {
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="bg-gradient-to-r from-green-400 to-emerald-400 text-green-900 p-4 rounded-xl"
+                className="bg-success/10 text-success p-4 rounded-xl"
               >
                 <div className="text-lg font-bold">🎯 LIBERADO! SEUS {userScore} PONTOS</div>
                 <div className="text-xl font-black">GARANTIRAM O MENOR PREÇO POSSÍVEL!</div>
@@ -316,9 +316,9 @@ const LossAversionSection: React.FC<{ answers: any }> = ({ answers }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-gradient-to-r from-red-50 to-orange-50 border-l-4 border-red-500 p-6 rounded-xl mb-8"
+      className="bg-danger/10 border-l-4 border-danger p-6 rounded-xl mb-8"
     >
-      <h3 className="font-bold text-red-800 mb-4 flex items-center text-lg">
+      <h3 className="font-bold text-danger mb-4 flex items-center text-lg">
         <AlertTriangle className="w-6 h-6 mr-2" />
         {scenario.title}
       </h3>
@@ -326,17 +326,17 @@ const LossAversionSection: React.FC<{ answers: any }> = ({ answers }) => {
       <div className="space-y-3 mb-4">
         {scenario.consequences.map((consequence, i) => (
           <div key={i} className="flex items-start gap-3">
-            <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
-            <span className="text-red-700 font-medium">{consequence}</span>
+            <X className="w-5 h-5 text-danger mt-0.5 flex-shrink-0" />
+            <span className="text-text_secondary font-medium">{consequence}</span>
           </div>
         ))}
       </div>
       
-      <div className="bg-white p-4 rounded-lg border border-red-200">
-        <p className="text-red-800 font-bold text-center">
+      <div className="bg-secondary/70 p-4 rounded-lg border border-danger/50">
+        <p className="text-danger font-bold text-center">
           {scenario.urgency}
         </p>
-        <p className="text-red-600 text-sm text-center mt-2">
+        <p className="text-text_secondary text-sm text-center mt-2">
           Estudos mostram: quanto mais tempo espera, mais difícil fica a recuperação
         </p>
       </div>
@@ -351,24 +351,24 @@ const GuaranteeHighlight: React.FC = () => {
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 0.5 }}
-      className="bg-gradient-to-r from-green-500 to-emerald-500 text-white p-6 rounded-xl mt-6 mb-6"
+      className="bg-success/10 text-success p-6 rounded-xl mt-6 mb-6"
     >
       <div className="text-center">
-        <Shield className="w-12 h-12 mx-auto mb-3 text-green-100" />
+        <Shield className="w-12 h-12 mx-auto mb-3 text-success/70" />
         <h3 className="text-xl font-bold mb-3">
           GARANTIA BLINDADA DE 7 DIAS
         </h3>
-        <p className="text-green-100 mb-4 leading-relaxed">
+        <p className="text-success/70 mb-4 leading-relaxed">
           <strong>Não sentiu melhora nas dores?</strong><br/>
           Devolvemos 100% do seu dinheiro na hora.<br/>
           Sem perguntas. Sem enrolação. Sem burocracia.
         </p>
         
-        <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4">
-          <p className="font-bold text-lg">
+        <div className="bg-secondary/70 backdrop-blur-sm rounded-lg p-4">
+          <p className="font-bold text-lg text-text_primary">
             💚 RISCO ZERO PARA VOCÊ
           </p>
-          <p className="text-sm text-green-100 mt-1">
+          <p className="text-text_secondary text-sm mt-1">
             O risco é todo nosso. Se não funcionar, você não paga nada.
           </p>
         </div>
@@ -649,7 +649,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
+    <div className="min-h-screen bg-primary">
       <div className="max-w-3xl mx-auto px-4 py-8">
         {/* Header com headline profissional */}
         <motion.div
@@ -657,21 +657,21 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <h1 className="text-4xl font-bold text-white mb-4">
+          <h1 className="text-4xl font-bold text-text_primary mb-4">
             Análise Completa do Seu Caso
           </h1>
-          <p className="text-xl text-white/90 mb-4">{archetype.subtitle}</p>
-          <p className="text-white/80 mb-6">{archetype.description}</p>
+          <p className="text-text_secondary text-xl mb-4">{archetype.subtitle}</p>
+          <p className="text-text_secondary mb-6">{archetype.description}</p>
           
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 inline-block">
-            <div className="flex justify-center items-center gap-6 text-sm text-white">
+          <div className="bg-secondary/70 backdrop-blur-sm rounded-lg p-4 inline-block">
+            <div className="flex justify-center items-center gap-6 text-sm text-text_secondary">
               <span className="flex items-center gap-2">
-                <Award className="w-4 h-4 text-yellow-400" />
+                <Award className="w-4 h-4 text-accent" />
                 {userScore} pontos na avaliação
               </span>
               <span>•</span>
-              <span className="flex items-center gap-2 bg-green-500/30 px-3 py-1 rounded-full">
-                <TrendingDown className="w-4 h-4 text-green-300" />
+              <span className="flex items-center gap-2 bg-success/10 px-3 py-1 rounded-full">
+                <TrendingDown className="w-4 h-4 text-success" />
                 <strong>Valor do tratamento: R${finalPrice.toFixed(2).replace('.', ',')}</strong>
               </span>
             </div>
@@ -683,7 +683,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-2xl shadow-2xl p-8 mb-8"
+          className="bg-secondary rounded-2xl shadow-2xl p-8 mb-8"
         >
           <div className="text-center mb-6">
             <img 
@@ -695,23 +695,23 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
                 target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%237c3aed'/%3E%3Ctext x='32' y='38' text-anchor='middle' fill='white' font-size='24' font-weight='bold'%3EAM%3C/text%3E%3C/svg%3E";
               }}
             />
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            <h2 className="text-2xl font-bold text-text_primary mb-2">
               Protocolo AlíMax | Tratamento para {getPainArea()}
             </h2>
-            <p className="text-gray-600">
+            <p className="text-text_secondary">
               Desenvolvido por especialistas em dor e movimento
             </p>
           </div>
           
           {/* Análise profunda personalizada */}
-          <div className="bg-blue-50 border-l-4 border-blue-400 p-6 mb-6">
-            <h3 className="font-bold text-blue-800 mb-3 flex items-center">
+          <div className="bg-neutral/10 border-l-4 border-accent p-6 mb-6">
+            <h3 className="font-bold text-accent mb-3 flex items-center">
               <Brain className="w-5 h-5 mr-2" />
               Análise Clínica do Seu Caso
             </h3>
             <div className="space-y-3">
               {personalizedInsights.map((insight, index) => (
-                <p key={index} className="text-blue-700 text-sm leading-relaxed">
+                <p key={index} className="text-text_secondary text-sm leading-relaxed">
                   <strong>• {insight}</strong>
                 </p>
               ))}
@@ -719,29 +719,29 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div className="bg-blue-50 p-4 rounded-xl text-center">
+            <div className="bg-neutral/10 p-4 rounded-xl text-center">
               <div className="text-2xl mb-2">👤</div>
-              <div className="text-xs text-gray-600">Perfil</div>
-              <div className="font-bold text-blue-700">{answers.age}</div>
+              <div className="text-xs text-text_secondary">Perfil</div>
+              <div className="font-bold text-text_primary">{answers.age}</div>
             </div>
-            <div className="bg-red-50 p-4 rounded-xl text-center">
+            <div className="bg-danger/10 p-4 rounded-xl text-center">
               <div className="text-2xl mb-2">{getPainEmoji(answers.painLevel)}</div>
-              <div className="text-xs text-gray-600">Dor</div>
-              <div className="font-bold text-red-700">{answers.painLevel}/10</div>
+              <div className="text-xs text-text_secondary">Dor</div>
+              <div className="font-bold text-danger">{answers.painLevel}/10</div>
             </div>
-            <div className="bg-green-50 p-4 rounded-xl text-center">
+            <div className="bg-success/10 p-4 rounded-xl text-center">
               <div className="text-2xl mb-2">🎯</div>
-              <div className="text-xs text-gray-600">Foco</div>
-              <div className="font-bold text-green-700">
+              <div className="text-xs text-text_secondary">Foco</div>
+              <div className="font-bold text-success">
                 {answers.mainProblem === 'back' ? 'Costas' : 
                  answers.mainProblem === 'neck' ? 'Pescoço' : 
                  answers.mainProblem === 'joints' ? 'Articulações' : 'Mobilidade'}
               </div>
             </div>
-            <div className="bg-purple-50 p-4 rounded-xl text-center">
+            <div className="bg-accent p-4 rounded-xl text-center">
               <div className="text-2xl mb-2">⏱️</div>
-              <div className="text-xs text-gray-600">Duração</div>
-              <div className="font-bold text-purple-700">
+              <div className="text-xs text-text_secondary">Duração</div>
+              <div className="font-bold text-accent">
                 {answers.duration === 'recent' ? '<3m' : 
                  answers.duration === 'moderate' ? '3m-1a' : 
                  answers.duration === 'chronic' ? '1-3a' : '+3a'}
@@ -751,31 +751,31 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
 
           <div className="space-y-4">
             <div className="flex items-start gap-4">
-              <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+              <CheckCircle className="w-6 h-6 text-success mt-1 flex-shrink-0" />
               <div>
-                <div className="font-semibold text-gray-800">🎯 Alívio Imediato das Dores</div>
-                <div className="text-sm text-gray-600">Primeiros resultados em 48-72h com técnicas de liberação miofascial</div>
+                <div className="font-semibold text-text_primary">🎯 Alívio Imediato das Dores</div>
+                <div className="text-sm text-text_secondary">Primeiros resultados em 48-72h com técnicas de liberação miofascial</div>
               </div>
             </div>
             <div className="flex items-start gap-4">
-              <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+              <CheckCircle className="w-6 h-6 text-success mt-1 flex-shrink-0" />
               <div>
-                <div className="font-semibold text-gray-800">💪 Fortalecimento Progressivo</div>
-                <div className="text-sm text-gray-600">Músculos mais fortes = menos dor e maior resistência no dia a dia</div>
+                <div className="font-semibold text-text_primary">💪 Fortalecimento Progressivo</div>
+                <div className="text-sm text-text_secondary">Músculos mais fortes = menos dor e maior resistência no dia a dia</div>
               </div>
             </div>
             <div className="flex items-start gap-4">
-              <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+              <CheckCircle className="w-6 h-6 text-success mt-1 flex-shrink-0" />
               <div>
-                <div className="font-semibold text-gray-800">🧘‍♀️ Relaxamento Profundo</div>
-                <div className="text-sm text-gray-600">Técnicas de respiração que reduzem stress e tensão muscular</div>
+                <div className="font-semibold text-text_primary">🧘‍♀️ Relaxamento Profundo</div>
+                <div className="text-sm text-text_secondary">Técnicas de respiração que reduzem stress e tensão muscular</div>
               </div>
             </div>
             <div className="flex items-start gap-4">
-              <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+              <CheckCircle className="w-6 h-6 text-success mt-1 flex-shrink-0" />
               <div>
-                <div className="font-semibold text-gray-800">🏠 Praticidade Total</div>
-                <div className="text-sm text-gray-600">15-20 min/dia em casa, sem equipamentos caros ou academia</div>
+                <div className="font-semibold text-text_primary">🏠 Praticidade Total</div>
+                <div className="text-sm text-text_secondary">15-20 min/dia em casa, sem equipamentos caros ou academia</div>
               </div>
             </div>
           </div>
@@ -789,14 +789,14 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl text-white p-8 mb-8 shadow-2xl"
+          className="bg-accent rounded-2xl text-white p-8 mb-8 shadow-2xl"
         >
           <div className="text-center mb-8">
-            <div className="bg-white/20 text-white px-4 py-2 rounded-full text-sm font-bold inline-block mb-4">
+            <div className="bg-secondary/70 text-text_primary px-4 py-2 rounded-full text-sm font-bold inline-block mb-4">
               TRATAMENTO PERSONALIZADO
             </div>
             <h2 className="text-3xl font-bold mb-3">Protocolo AlíMax | Tratamento para {getPainArea()}</h2>
-            <p className="text-white/90 text-lg">Protocolo completo desenvolvido por especialistas</p>
+            <p className="text-text_secondary text-lg">Protocolo completo desenvolvido por especialistas</p>
           </div>
 
           {/* Ancoragem de Preços */}
@@ -806,13 +806,13 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={handlePurchaseClick}
-            className="w-full bg-white text-blue-700 hover:bg-blue-50 font-bold py-6 px-8 rounded-xl text-lg transition-all shadow-lg flex items-center justify-center gap-3"
+            className="w-full bg-text_primary text-accent hover:bg-neutral font-bold py-6 px-8 rounded-xl text-lg transition-all shadow-lg flex items-center justify-center gap-3"
           >
             Iniciar Tratamento
             <ChevronRight className="w-6 h-6" />
           </motion.button>
 
-          <div className="text-center mt-3 text-white/80 text-sm">
+          <div className="text-center mt-3 text-text_secondary text-sm">
             Garantia de satisfação de 7 dias
           </div>
         </motion.div>
@@ -822,38 +822,38 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-xl mt-6 mb-6"
+          className="bg-success/10 text-success p-6 rounded-xl mt-6 mb-6"
         >
           <div className="text-center">
-            <Shield className="w-12 h-12 mx-auto mb-3 text-blue-200" />
+            <Shield className="w-12 h-12 mx-auto mb-3 text-success/70" />
             <h3 className="text-xl font-bold mb-3">
               Garantia de Satisfação
             </h3>
-            <p className="text-blue-100 mb-4 leading-relaxed">
+            <p className="text-success/70 mb-4 leading-relaxed">
               <strong>Não satisfeita com os resultados?</strong><br/>
               Devolvemos 100% do valor investido.<br/>
               Sem burocracia.
             </p>
             
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6">
-              <h4 className="font-bold mb-4">Suporte Especializado:</h4>
+            <div className="bg-secondary/70 backdrop-blur-sm rounded-lg p-6 mb-6">
+              <h4 className="font-bold text-text_primary mb-4">Suporte Especializado:</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div className="flex items-center gap-2">
-                  <MessageCircle className="w-5 h-5 text-blue-200" />
+                  <MessageCircle className="w-5 h-5 text-accent" />
                   <span>Atendimento com especialistas</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Phone className="w-5 h-5 text-blue-200" />
+                  <Phone className="w-5 h-5 text-accent" />
                   <span>Suporte por WhatsApp</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Heart className="w-5 h-5 text-blue-200" />
+                  <Heart className="w-5 h-5 text-accent" />
                   <span>Acompanhamento personalizado</span>
                 </div>
               </div>
             </div>
             
-            <p className="text-sm text-blue-200">
+            <p className="text-text_secondary text-sm">
               Nossa equipe está disponível de segunda a sexta, das 9h às 18h.
             </p>
           </div>
@@ -864,12 +864,12 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="bg-white rounded-2xl shadow-2xl p-8 mb-8"
+          className="bg-secondary rounded-2xl shadow-2xl p-8 mb-8"
         >
           <div className="text-center mb-8">
-            <HelpCircle className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-gray-800 mb-2">Perguntas Frequentes</h3>
-            <p className="text-gray-600">Tire suas dúvidas sobre o Protocolo AlíMax</p>
+            <HelpCircle className="w-12 h-12 text-accent mx-auto mb-4" />
+            <h3 className="text-2xl font-bold text-text_primary mb-2">Perguntas Frequentes</h3>
+            <p className="text-text_secondary">Tire suas dúvidas sobre o Protocolo AlíMax</p>
           </div>
 
           <div className="space-y-4">
@@ -879,55 +879,18 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.1 * index }}
-                className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                className="border border-secondary/50 rounded-lg p-4 hover:bg-secondary/70 transition-colors"
               >
-                <h4 className="font-semibold text-gray-800 mb-2 flex items-start gap-2">
-                  <span className="text-blue-600 font-bold">Q:</span>
+                <h4 className="font-semibold text-text_primary mb-2 flex items-start gap-2">
+                  <span className="text-accent font-bold">Q:</span>
                   {item.question}
                 </h4>
-                <p className="text-gray-600 text-sm leading-relaxed pl-6">
-                  <span className="text-blue-600 font-bold">R:</span> {item.answer}
+                <p className="text-text_secondary text-sm leading-relaxed pl-6">
+                  <span className="text-accent font-bold">R:</span> {item.answer}
                 </p>
               </motion.div>
             ))}
           </div>
-        </motion.div>
-
-        {/* Support and Guarantee Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.0 }}
-          className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl text-white p-8 text-center"
-        >
-          <Shield className="w-16 h-16 mx-auto mb-4 text-green-200" />
-          <h3 className="text-2xl font-bold mb-4">Garantia Total de 7 Dias</h3>
-          <p className="text-green-100 mb-6 leading-relaxed">
-            Experimente o Método AlíMax por 7 dias completos. Se não sentir melhora significativa nas suas dores, 
-            devolvemos 100% do seu investimento, sem perguntas e sem burocracia.
-          </p>
-          
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6">
-            <h4 className="font-bold mb-4">Suporte Completo Incluso:</h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <MessageCircle className="w-5 h-5 text-green-200" />
-                <span>Chat direto com especialistas</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-5 h-5 text-green-200" />
-                <span>Suporte por WhatsApp</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Heart className="w-5 h-5 text-green-200" />
-                <span>Acompanhamento personalizado</span>
-              </div>
-            </div>
-          </div>
-          
-          <p className="text-sm text-green-200">
-            Nossa equipe está disponível de segunda a sexta, das 9h às 18h, para te ajudar em cada passo da sua jornada.
-          </p>
         </motion.div>
       </div>
     </div>

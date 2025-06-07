@@ -33,18 +33,18 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
   }, [duration, onComplete]);
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 flex items-center justify-center">
-      <div className="text-white text-center max-w-lg mx-auto px-4">
+    <div className="min-h-screen bg-primary flex items-center justify-center">
+      <div className="text-text_primary text-center max-w-lg mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="mb-8"
         >
-          <div className="w-24 h-24 bg-gradient-to-r from-purple-600 to-purple-700 rounded-full mx-auto mb-6 flex items-center justify-center">
+          <div className="w-24 h-24 bg-accent rounded-full mx-auto mb-6 flex items-center justify-center">
             <Brain className="w-12 h-12 text-white" />
           </div>
           <h2 className="text-3xl font-bold mb-4">Analisando Seu Caso</h2>
-          <p className="text-white/80 text-lg">
+          <p className="text-text_secondary text-lg">
             Nossa IA está processando suas respostas para criar o método perfeito para você
           </p>
         </motion.div>
@@ -52,27 +52,27 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 mb-8"
+          className="bg-secondary rounded-2xl p-8 mb-8"
         >
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 rounded-full border-4 border-purple-500 border-t-transparent animate-spin" />
+            <div className="w-16 h-16 rounded-full border-4 border-accent border-t-transparent animate-spin" />
           </div>
           
-          <div className="bg-white/20 rounded-full h-3 mb-4 overflow-hidden">
+          <div className="bg-neutral/20 rounded-full h-3 mb-4 overflow-hidden">
             <motion.div
-              className="bg-gradient-to-r from-purple-400 via-purple-500 to-blue-500 h-3 rounded-full"
+              className="bg-accent h-3 rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
               transition={{ duration: 0.5 }}
             />
           </div>
           
-          <div className="text-sm text-white/80">
+          <div className="text-sm text-text_secondary">
             {Math.round(progress)}% concluído
           </div>
         </motion.div>
         
-        <div className="text-sm text-white/70">
+        <div className="text-sm text-text_secondary">
           ✅ {userScore} pontos analisados • 🔍 {Object.keys(answers).length} parâmetros processados
         </div>
       </div>
