@@ -387,35 +387,15 @@ const useBehavioralTracking = () => {
 
 function App() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [answers, setAnswers] = useState<any>({});
   const [userScore, setUserScore] = useState(0);
-  const [achievements, setAchievements] = useState<string[]>([]);
-  const [answers, setAnswers] = useState({
-    age: null,
-    painLevel: 0,
-    mainProblem: null,
-    duration: null,
-    previousTreatment: null,
-    email: '',
-    timeAvailable: null,
-    lifestyle: null,
-    investment: null
-  });
+  const [timeLeft, setTimeLeft] = useState(1800); // 30 minutos
   const [showResults, setShowResults] = useState(false);
-  const [showAnalysis, setShowAnalysis] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
-  const [analysisStep, setAnalysisStep] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(600);
-  const [recentUsers] = useState(Math.floor(Math.random() * 50) + 200);
-  const [hasTrackedStart, setHasTrackedStart] = useState(false);
-
-  // Estado da gamificação
-  const [gamificationState, setGamificationState] = useState<GamificationState>({
-    level: 1,
+  const [gamificationState, setGamificationState] = useState({
     experiencePoints: 0,
-    badges: [],
-    streak: 0,
-    milestones: [],
-    powerUps: []
+    badges: [] as string[],
+    level: 1
   });
 
   // Behavioral tracking
@@ -423,29 +403,10 @@ function App() {
 
   // Track quiz start and check pixel status
   useEffect(() => {
-    if (!hasTrackedStart) {
-      const timer = setTimeout(() => {
-        checkPixelStatus();
-        trackQuizStart();
-        retryPendingEvents();
-        setHasTrackedStart(true);
-        
-        // Award first badge
-        addExperience(25, 'quiz_start');
-      }, 1000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [hasTrackedStart]);
-
-  // Timer para atualizar usuários online
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const variation = Math.floor(Math.random() * 10) - 5;
-      const newCount = Math.max(180, Math.min(280, recentUsers + variation));
-    }, 15000);
-    return () => clearInterval(interval);
-  }, [recentUsers]);
+    checkPixelStatus();
+    trackQuizStart();
+    retryPendingEvents();
+  }, []);
 
   // Timer countdown
   useEffect(() => {
@@ -459,7 +420,7 @@ function App() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     trackQuestionStart(currentStep.toString());
-  }, [currentStep, showAnalysis, showResults]);
+  }, [currentStep, showResults]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -467,212 +428,29 @@ function App() {
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
-  // Função para adicionar XP e badges
-  const addExperience = (points: number, trigger?: string) => {
-    setGamificationState(prev => {
-      const newXP = prev.experiencePoints + points;
-      const newLevel = GamificationSystem.calculateLevel(newXP);
-      let newBadges = [...prev.badges];
-      
-      // Verifica se ganhou novo badge
-      if (trigger) {
-        newBadges = GamificationSystem.awardBadge(trigger, newBadges);
-      }
-      
-      // Verifica se subiu de nível
-      const leveledUp = newLevel.level > GamificationSystem.calculateLevel(prev.experiencePoints).level;
-      if (leveledUp) {
-        createLevelUpAnimation();
-      }
-      
-      return {
-        ...prev,
-        experiencePoints: newXP,
-        badges: newBadges
-      };
-    });
-  };
-
-  // Animação de level up
-  const createLevelUpAnimation = () => {
-    createConfetti();
-    
-    const notification = document.createElement('div');
-    notification.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-6 rounded-xl shadow-2xl z-50 animate-bounce';
-    notification.innerHTML = `
-      <div class="text-center">
-        <div class="text-3xl mb-2">🎉</div>
-        <div class="font-bold text-xl">LEVEL UP!</div>
-        <div class="text-sm">Você evoluiu de nível!</div>
-      </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-      document.body.removeChild(notification);
-    }, 3000);
-  };
-
-  // Sistema de gamificação com confetti
-  const addPoints = (points: number, achievement?: string) => {
-    setUserScore(prev => prev + points);
-    addExperience(points);
-    
-    if (achievement && !achievements.includes(achievement)) {
-      setAchievements(prev => [...prev, achievement]);
-      
-      setTimeout(() => {
-        createConfetti();
-      }, 200);
-    }
-  };
-
-  const createConfetti = () => {
-    const canvas = document.createElement('canvas');
-    canvas.style.position = 'fixed';
-    canvas.style.top = '0';
-    canvas.style.left = '0';
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-    canvas.style.pointerEvents = 'none';
-    canvas.style.zIndex = '9999';
-    document.body.appendChild(canvas);
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const particles: Array<{
-      x: number;
-      y: number;
-      size: number;
-      speed: number;
-      color: string;
-    }> = [];
-    
-    for (let i = 0; i < 30; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: -10,
-        size: Math.random() * 8 + 4,
-        speed: Math.random() * 3 + 2,
-        color: ['#7c3aed', '#a855f7', '#c084fc'][Math.floor(Math.random() * 3)]
-      });
-    }
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      particles.forEach((particle, index) => {
-        particle.y += particle.speed;
-        particle.x += Math.sin(particle.y * 0.01) * 0.5;
-        
-        ctx.fillStyle = particle.color;
-        ctx.fillRect(particle.x, particle.y, particle.size, particle.size);
-        
-        if (particle.y > canvas.height) {
-          particles.splice(index, 1);
-        }
-      });
-
-      if (particles.length > 0) {
-        requestAnimationFrame(animate);
-      } else {
-        document.body.removeChild(canvas);
-      }
-    };
-    
-    animate();
-  };
-
   const handleAnswer = (field: string, value: any) => {
     setAnswers(prev => ({ ...prev, [field]: value }));
     
-    // Track question end
-    trackQuestionEnd(currentStep.toString());
+    // Atualizar pontuação
+    const newScore = userScore + 10;
+    setUserScore(newScore);
     
-    // Track progress
-    trackQuizProgress(currentStep + 1, 9);
+    // Atualizar gamificação
+    setGamificationState(prev => ({
+      ...prev,
+      experiencePoints: prev.experiencePoints + 10
+    }));
     
-    // Sistema de pontos progressivo
-    const pointsMap: Record<string, number> = {
-      age: 15,
-      painLevel: 20,
-      mainProblem: 25,
-      duration: 20,
-      previousTreatment: 30,
-      email: 35,
-      lifestyle: 25,
-      timeAvailable: 30,
-      investment: 40
-    };
-    
-    const achievementsMap: Record<string, string> = {
-      age: '🎯 Perfil Identificado',
-      painLevel: '📊 Dor Mapeada', 
-      mainProblem: '🔍 Problema Localizado',
-      duration: '⏰ Histórico Analisado',
-      previousTreatment: '💡 Experiência Avaliada',
-      email: '📧 Conectado ao Sistema',
-      lifestyle: '🏢 Rotina Mapeada',
-      timeAvailable: '⚡ Disponibilidade Configurada',
-      investment: '👑 Avaliação Completa'
-    };
-
-    addPoints(pointsMap[field], achievementsMap[field]);
-    
-    // Award badges based on answers
-    if (field === 'painLevel' && value >= 7) {
-      addExperience(10, 'pain_warrior');
-    }
-    
-    if (currentStep === 4) { // Middle of quiz
-      addExperience(15, 'truth_seeker');
-    }
-    
-    // Trigger análise no meio do quiz (após previousTreatment - pergunta 4)
-    if (field === 'previousTreatment' && currentStep === 4) {
-      setTimeout(() => {
-        setShowAnalysis(true);
-        runAnalysis();
-      }, 300);
-    } else if (currentStep === 8) {
-      // Última pergunta - vai para loading e depois resultados
-      addExperience(25, 'quiz_complete');
-      setTimeout(() => {
-        setShowLoading(true);
-      }, 300);
+    // Próxima pergunta
+    if (currentStep < quizSteps.length - 1) {
+      setCurrentStep(prev => prev + 1);
     } else {
-      // Avança para próxima pergunta
+      setShowLoading(true);
       setTimeout(() => {
-        setCurrentStep(prev => prev + 1);
-      }, 300);
+        setShowLoading(false);
+        setShowResults(true);
+      }, 5000);
     }
-  };
-
-  const runAnalysis = () => {
-    let step = 0;
-    const interval = setInterval(() => {
-      setAnalysisStep(step);
-      step++;
-      if (step >= 5) {
-        clearInterval(interval);
-        setTimeout(() => {
-          setShowAnalysis(false);
-          setCurrentStep(5); // Vai para o email (índice 5)
-        }, 1000);
-      }
-    }, 1200);
-  };
-
-  const handleLoadingComplete = () => {
-    setShowLoading(false);
-    setShowResults(true);
-    // Track quiz completion
-    trackQuizComplete(userScore);
   };
 
   if (showLoading) {
@@ -680,14 +458,10 @@ function App() {
       <LoadingScreen 
         userScore={userScore} 
         answers={answers}
-        onComplete={handleLoadingComplete}
+        onComplete={() => {}}
         duration={5000}
       />
     );
-  }
-
-  if (showAnalysis) {
-    return <QuizAnalysis answers={answers} analysisStep={analysisStep} userScore={userScore} />;
   }
 
   if (showResults) {
@@ -696,7 +470,6 @@ function App() {
         answers={answers} 
         userScore={userScore} 
         timeLeft={timeLeft}
-        recentUsers={recentUsers}
       />
     );
   }
@@ -708,7 +481,7 @@ function App() {
       <LoadingScreen 
         userScore={userScore} 
         answers={answers}
-        onComplete={handleLoadingComplete}
+        onComplete={() => {}}
         duration={5000}
       />
     );
@@ -791,21 +564,6 @@ function App() {
                 {currentStepData.title}
               </h1>
               <p className="text-gray-600 text-lg">{currentStepData.subtitle}</p>
-              
-              {achievements.length > 0 && (
-                <div className="flex justify-center gap-1 mt-6 flex-wrap px-4">
-                  {achievements.map((achievement, i) => (
-                    <motion.span
-                      key={i}
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium"
-                    >
-                      {achievement}
-                    </motion.span>
-                  ))}
-                </div>
-              )}
             </div>
 
             <QuizSteps
@@ -828,7 +586,7 @@ function App() {
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-4">
             <div className="flex items-center justify-center gap-3 mb-4">
               <Users className="w-5 h-5" />
-              <span className="font-medium">{recentUsers + Math.floor(Math.random() * 10)} pessoas fazendo a avaliação agora</span>
+              <span className="font-medium">4.9/5 ⭐ (8.247 avaliações)</span>
             </div>
             
             {/* Fotos de perfil em vez de estrelas */}
@@ -846,7 +604,6 @@ function App() {
                   />
                 ))}
               </div>
-              <span className="ml-3 font-medium">4.9/5 ⭐ (8.247 avaliações)</span>
             </div>
           </div>
           <div className="text-sm text-white/70">

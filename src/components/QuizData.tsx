@@ -41,29 +41,23 @@ export const quizSteps = [
   {
     id: 'previousTreatment',
     title: 'Já tentou algum tratamento antes?',
-    subtitle: 'Suas experiências anteriores nos ajudam a personalizar melhor',
+    subtitle: 'Isso nos ajuda a entender melhor seu caso',
     options: [
-      { value: 'none', label: 'Nunca fiz nada específico', emoji: '🎯', desc: 'Primeira abordagem' },
-      { value: 'medicine', label: 'Apenas medicamentos', emoji: '💊', desc: 'Tratamento sintomático' },
-      { value: 'physical', label: 'Fisioterapia tradicional', emoji: '🏥', desc: 'Método convencional' },
-      { value: 'multiple', label: 'Vários tratamentos', emoji: '🔄', desc: 'Busca por solução definitiva' }
+      { value: 'none', label: 'Nenhum tratamento', emoji: '🆕', desc: 'Primeira busca por solução' },
+      { value: 'some', label: 'Alguns tratamentos', emoji: '💊', desc: 'Tentativas anteriores' },
+      { value: 'multiple', label: 'Vários tratamentos', emoji: '🔄', desc: 'Busca por solução definitiva' },
+      { value: 'surgery', label: 'Cirurgia', emoji: '🔪', desc: 'Caso mais complexo' }
     ]
   },
   {
-    id: 'email',
-    title: 'Para onde enviar seu plano personalizado?',
-    subtitle: 'Você está quase descobrindo qual dos métodos é ideal para você',
-    type: 'email'
-  },
-  {
     id: 'lifestyle',
-    title: 'Como é sua rotina de trabalho?',
-    subtitle: 'Adaptaremos o método ao seu estilo de vida',
+    title: 'Como é seu estilo de vida?',
+    subtitle: 'Sua rotina influencia diretamente no tratamento',
     options: [
-      { value: 'sedentary', label: 'Trabalho sentada/escritório', emoji: '💻', desc: 'Exercícios para postura' },
-      { value: 'standing', label: 'Fico muito em pé', emoji: '👩‍⚕️', desc: 'Alívio para sobrecarga' },
-      { value: 'physical', label: 'Trabalho físico/ativo', emoji: '💪', desc: 'Recuperação muscular' },
-      { value: 'mixed', label: 'Rotina variada', emoji: '🔄', desc: 'Adaptação flexível' }
+      { value: 'sedentary', label: 'Sedentário', emoji: '💺', desc: 'Muito tempo sentado' },
+      { value: 'active', label: 'Ativo', emoji: '🏃', desc: 'Movimento regular' },
+      { value: 'standing', label: 'Em pé', emoji: '👣', desc: 'Muito tempo em pé' },
+      { value: 'mixed', label: 'Variado', emoji: '🔄', desc: 'Combinação de atividades' }
     ]
   },
   {

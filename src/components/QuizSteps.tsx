@@ -45,7 +45,7 @@ const EmotionalPainSlider: React.FC<{
     { value: 10, emoji: '🤕', label: 'Dor máxima', color: 'from-red-700 to-red-800', description: 'É impossível ignorar ou conviver' }
   ];
   
-  const currentLevel = painLevels[painLevel];
+  const currentLevel = painLevels[painLevel] || painLevels[0];
   
   return (
     <div className="space-y-8">
@@ -119,106 +119,6 @@ const EmotionalPainSlider: React.FC<{
       >
         Confirmar Nível de Dor: {currentLevel.label}
       </button>
-    </div>
-  );
-};
-
-// Componente de Commitment Escalation
-const CommitmentEscalation: React.FC<{ 
-  answers: any; 
-  onCommitment: (commitments: string[]) => void;
-}> = ({ answers, onCommitment }) => {
-  const [currentCommitment, setCurrentCommitment] = useState(0);
-  const [userCommitments, setUserCommitments] = useState<string[]>([]);
-  
-  const commitmentQuestions = [
-    {
-      question: "Você REALMENTE quer eliminar suas dores de vez?",
-      subtext: "Não apenas diminuir, mas eliminar completamente",
-      commitment: "Sim, quero eliminar minhas dores definitivamente"
-    },
-    {
-      question: `Você se compromete a dedicar ${answers.timeAvailable || '15 minutos'} por dia?`,
-      subtext: "Consistência é fundamental para o resultado",
-      commitment: `Comprometo-me com ${answers.timeAvailable || '15 minutos'} diários`
-    },
-    {
-      question: "Você acredita que é possível viver sem dores?",
-      subtext: "Sua mentalidade determina 70% do resultado",
-      commitment: "Acredito que posso viver sem dores"
-    }
-  ];
-  
-  const handleCommitment = (commitment: string) => {
-    const newCommitments = [...userCommitments, commitment];
-    setUserCommitments(newCommitments);
-    
-    // Track micro-commitment
-    trackPixelEvent('Lead', {
-      content_name: `Micro-compromisso ${currentCommitment + 1}`,
-      content_category: 'Commitment Escalation',
-      value: 10 * (currentCommitment + 1)
-    });
-    
-    if (currentCommitment < commitmentQuestions.length - 1) {
-      setTimeout(() => setCurrentCommitment(prev => prev + 1), 500);
-    } else {
-      // Todas as commitments feitas - prossegue para email
-      setTimeout(() => onCommitment(newCommitments), 1000);
-    }
-  };
-  
-  if (currentCommitment >= commitmentQuestions.length) {
-    return (
-      <div className="text-center bg-green-50 p-6 rounded-xl">
-        <h3 className="text-xl font-bold text-green-800 mb-3">
-          🎯 Perfeito! Você está 100% comprometida com sua transformação
-        </h3>
-        <div className="space-y-2 text-green-700 text-sm">
-          {userCommitments.map((commitment, i) => (
-            <div key={i} className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4" />
-              {commitment}
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-  
-  const current = commitmentQuestions[currentCommitment];
-  
-  return (
-    <div className="space-y-6">
-      <div className="bg-blue-50 p-6 rounded-xl">
-        <h3 className="text-lg font-bold text-blue-800 mb-3">
-          {current.question}
-        </h3>
-        <p className="text-blue-600 mb-4 text-sm">
-          {current.subtext}
-        </p>
-        
-        <div className="flex gap-3">
-          <button
-            onClick={() => handleCommitment(current.commitment)}
-            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold"
-          >
-            ✅ {current.commitment}
-          </button>
-        </div>
-      </div>
-      
-      {/* Progresso dos compromissos */}
-      <div className="flex justify-center gap-2">
-        {commitmentQuestions.map((_, i) => (
-          <div 
-            key={i}
-            className={`w-3 h-3 rounded-full ${
-              i <= currentCommitment ? 'bg-blue-600' : 'bg-gray-300'
-            }`}
-          />
-        ))}
-      </div>
     </div>
   );
 };
@@ -354,11 +254,6 @@ export const QuizSteps: React.FC<QuizStepsProps> = ({
     }, 500);
   };
 
-  // Mostrar commitment escalation após previousTreatment (pergunta 4)
-  if (currentStep.id === 'previousTreatment' && showCommitments) {
-    return <CommitmentEscalation answers={answers} onCommitment={handleCommitmentComplete} />;
-  }
-
   // Slider para dor com versão emocional avançada
   if (currentStep.type === 'slider') {
     return (
@@ -454,13 +349,8 @@ export const QuizSteps: React.FC<QuizStepsProps> = ({
   // Opções de resposta
   if (currentStep.options) {
     const handleOptionClick = (value: string) => {
-      // Se for previousTreatment, mostrar commitment escalation
-      if (currentStep.id === 'previousTreatment') {
-        onAnswersChange({ ...answers, [currentStep.id]: value });
-        setShowCommitments(true);
-      } else {
-        onAnswer(currentStep.id, value);
-      }
+      // Se for previousTreatment, apenas avança normalmente
+      onAnswer(currentStep.id, value);
     };
 
     return (
