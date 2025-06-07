@@ -290,7 +290,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
         >
           <div className="text-center mb-6">
             <img 
-              src="https://i.ibb.co/WWS0XWMS/logo.png"
+              src="https://institutodeneurociencias.com.br/wp-content/uploads/2015/10/DSC_0762.jpg"
               alt="Método AlíMax"
               className="w-16 h-16 mx-auto mb-4 rounded-full object-cover"
               onError={(e) => {
