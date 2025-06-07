@@ -509,33 +509,33 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
     
     if (painLevel >= 7 && duration === 'longtime') {
       return {
-        title: "A Guerreira Indomável",
-        subtitle: "Você enfrenta a dor há muito tempo, mas nunca desistiu",
-        description: "Mulheres como você são verdadeiras lutadoras que merecem uma solução definitiva"
+        title: "Caso de Dor Crônica",
+        subtitle: "Identificamos um padrão de dor persistente que requer atenção especializada",
+        description: "Nossa equipe médica está preparada para oferecer o tratamento mais adequado ao seu caso"
       };
     } else if (mainProblem === 'back' && age === '45-54') {
       return {
-        title: "A Protetora Resiliente", 
-        subtitle: "Você cuida de todos, mas precisa cuidar de si mesma",
-        description: "É hora de priorizar sua saúde para continuar sendo forte para quem você ama"
+        title: "Problema Lombar", 
+        subtitle: "Sua condição requer uma abordagem específica para a região lombar",
+        description: "Nossos especialistas desenvolveram um protocolo específico para seu caso"
       };
     } else if (painLevel <= 4 && duration === 'recent') {
       return {
-        title: "A Estrategista Inteligente",
-        subtitle: "Você age antes que o problema se torne maior",
-        description: "Sua atitude preventiva vai fazer toda a diferença no seu futuro"
+        title: "Dor Recente",
+        subtitle: "Identificamos um padrão de dor recente que pode ser tratado de forma preventiva",
+        description: "A intervenção precoce é fundamental para evitar complicações futuras"
       };
     } else if (age === '55-64' || age === '65+') {
       return {
-        title: "A Sábia Determinada",
-        subtitle: "Com experiência vem a sabedoria de buscar o que funciona",
-        description: "Você sabe que merece viver sem dores e está pronta para a mudança"
+        title: "Acompanhamento Especializado",
+        subtitle: "Seu caso requer atenção especial considerando sua faixa etária",
+        description: "Nossa equipe está preparada para oferecer o tratamento mais adequado"
       };
     } else {
       return {
-        title: "A Transformadora Corajosa",
-        subtitle: "Você tem coragem de buscar uma nova versão de si mesma",
-        description: "Sua jornada de transformação começa agora, sem dores limitando seus sonhos"
+        title: "Tratamento Personalizado",
+        subtitle: "Identificamos o melhor protocolo para seu caso específico",
+        description: "Nossa equipe médica está pronta para iniciar seu tratamento"
       };
     }
   };
@@ -651,14 +651,14 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
       <div className="max-w-3xl mx-auto px-4 py-8">
-        {/* Header com headline melhorada */}
+        {/* Header com headline profissional */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
           <h1 className="text-4xl font-bold text-white mb-4">
-            Descobrimos Qual Método Vai Eliminar Suas Dores!
+            Análise Completa do Seu Caso
           </h1>
           <p className="text-xl text-white/90 mb-4">{archetype.subtitle}</p>
           <p className="text-white/80 mb-6">{archetype.description}</p>
@@ -667,22 +667,16 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
             <div className="flex justify-center items-center gap-6 text-sm text-white">
               <span className="flex items-center gap-2">
                 <Award className="w-4 h-4 text-yellow-400" />
-                {userScore} pontos conquistados
+                {userScore} pontos na avaliação
               </span>
               <span>•</span>
               <span className="flex items-center gap-2 bg-green-500/30 px-3 py-1 rounded-full">
                 <TrendingDown className="w-4 h-4 text-green-300" />
-                <strong>Oferta especial liberada: R${finalPrice.toFixed(2).replace('.', ',')}</strong>
+                <strong>Valor do tratamento: R${finalPrice.toFixed(2).replace('.', ',')}</strong>
               </span>
             </div>
           </div>
         </motion.div>
-
-        {/* Sistema de Urgência Real */}
-        <RealUrgencySystem />
-
-        {/* Social Proof Específico por Perfil */}
-        <ProfileBasedSocialProof answers={answers} />
 
         {/* Análise personalizada aprofundada */}
         <motion.div
@@ -694,7 +688,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
           <div className="text-center mb-6">
             <img 
               src="https://institutodeneurociencias.com.br/wp-content/uploads/2015/10/DSC_0762.jpg"
-              alt="Método AlíMax"
+              alt="Dr. AlíMax"
               className="w-16 h-16 mx-auto mb-4 rounded-full object-cover"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
@@ -702,10 +696,10 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
               }}
             />
             <h2 className="text-2xl font-bold text-gray-800 mb-2">
-              Método AlíMax | Alívio de dores no {getPainArea()}
+              Protocolo AlíMax | Tratamento para {getPainArea()}
             </h2>
             <p className="text-gray-600">
-              {archetype.subtitle}
+              Desenvolvido por especialistas em dor e movimento
             </p>
           </div>
           
@@ -713,7 +707,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
           <div className="bg-blue-50 border-l-4 border-blue-400 p-6 mb-6">
             <h3 className="font-bold text-blue-800 mb-3 flex items-center">
               <Brain className="w-5 h-5 mr-2" />
-              Análise Personalizada do Seu Caso
+              Análise Clínica do Seu Caso
             </h3>
             <div className="space-y-3">
               {personalizedInsights.map((insight, index) => (
@@ -790,111 +784,82 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
         {/* Loss Aversion Section */}
         <LossAversionSection answers={answers} />
 
-        {/* Oferta com ancoragem de preços */}
+        {/* Oferta com tom profissional */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-gradient-to-r from-purple-600 via-purple-600 to-blue-700 rounded-2xl text-white p-8 mb-8 shadow-2xl"
+          className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl text-white p-8 mb-8 shadow-2xl"
         >
           <div className="text-center mb-8">
-            <div className="bg-yellow-400 text-gray-900 px-4 py-2 rounded-full text-sm font-bold inline-block mb-4">
-              🏆 OFERTA EXCLUSIVA PARA SEU PERFIL
+            <div className="bg-white/20 text-white px-4 py-2 rounded-full text-sm font-bold inline-block mb-4">
+              TRATAMENTO PERSONALIZADO
             </div>
-            <h2 className="text-3xl font-bold mb-3">Método AlíMax | Alívio de dores no {getPainArea()}</h2>
-            <p className="text-white/90 text-lg">O sistema completo para eliminar suas dores em 21 dias</p>
+            <h2 className="text-3xl font-bold mb-3">Protocolo AlíMax | Tratamento para {getPainArea()}</h2>
+            <p className="text-white/90 text-lg">Protocolo completo desenvolvido por especialistas</p>
           </div>
 
           {/* Ancoragem de Preços */}
           <PricingAnchorage userScore={userScore} />
 
-          <div className="bg-red-500/20 backdrop-blur-sm rounded-lg p-4 mb-6 border border-red-300/30">
-            <div className="flex justify-center items-center gap-3 text-sm">
-              <Clock className="w-5 h-5 text-red-300" />
-              <span className="font-bold">OFERTA EXPIRA EM: {formatTime(timeLeft)}</span>
-            </div>
-          </div>
-
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={handlePurchaseClick}
-            className="w-full bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-gray-900 font-bold py-6 px-8 rounded-xl text-lg transition-all shadow-lg flex items-center justify-center gap-3"
+            className="w-full bg-white text-blue-700 hover:bg-blue-50 font-bold py-6 px-8 rounded-xl text-lg transition-all shadow-lg flex items-center justify-center gap-3"
           >
-            {ctaText.primary}
+            Iniciar Tratamento
             <ChevronRight className="w-6 h-6" />
           </motion.button>
 
           <div className="text-center mt-3 text-white/80 text-sm">
-            {ctaText.secondary}
-          </div>
-
-          <div className="flex justify-center items-center gap-6 mt-6 text-sm text-white/80">
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4" />
-              <span>Garantia 7 dias</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              <span>{Math.floor(Math.random() * 10)} mulheres comprando agora</span>
-            </div>
+            Garantia de satisfação de 7 dias
           </div>
         </motion.div>
 
-        {/* Garantia Destacada */}
-        <GuaranteeHighlight />
-
-        {/* Reviews expandidos e mais autênticos */}
+        {/* Garantia com tom profissional */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mb-8"
+          transition={{ delay: 0.5 }}
+          className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-xl mt-6 mb-6"
         >
-          <h3 className="text-center text-white text-2xl font-bold mb-8">
-            O que dizem quem já eliminou as dores:
-          </h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {reviews.map((review, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * index }}
-                className="bg-white rounded-xl p-6 shadow-lg"
-              >
-                <div className="flex text-yellow-400 mb-3">
-                  {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+          <div className="text-center">
+            <Shield className="w-12 h-12 mx-auto mb-3 text-blue-200" />
+            <h3 className="text-xl font-bold mb-3">
+              Garantia de Satisfação
+            </h3>
+            <p className="text-blue-100 mb-4 leading-relaxed">
+              <strong>Não satisfeita com os resultados?</strong><br/>
+              Devolvemos 100% do valor investido.<br/>
+              Sem burocracia.
+            </p>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6">
+              <h4 className="font-bold mb-4">Suporte Especializado:</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div className="flex items-center gap-2">
+                  <MessageCircle className="w-5 h-5 text-blue-200" />
+                  <span>Atendimento com especialistas</span>
                 </div>
-                
-                <p className="text-gray-700 italic mb-4 leading-relaxed text-sm">
-                  "{review.text}"
-                </p>
-                
-                <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
-                  <div className="text-xs text-green-700 font-medium">
-                    <strong>Problema:</strong> {review.problem} • <strong>Resultado em:</strong> {review.timeToResult}
-                  </div>
+                <div className="flex items-center gap-2">
+                  <Phone className="w-5 h-5 text-blue-200" />
+                  <span>Suporte por WhatsApp</span>
                 </div>
-                
-                <div className="flex items-center gap-3">
-                  <img 
-                    src={review.image}
-                    alt={review.name}
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                  <div>
-                    <p className="font-semibold text-gray-800 text-sm">{review.name}</p>
-                    <p className="text-xs text-gray-600">{review.age}, {review.location}</p>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-blue-200" />
+                  <span>Acompanhamento personalizado</span>
                 </div>
-              </motion.div>
-            ))}
+              </div>
+            </div>
+            
+            <p className="text-sm text-blue-200">
+              Nossa equipe está disponível de segunda a sexta, das 9h às 18h.
+            </p>
           </div>
         </motion.div>
 
-        {/* FAQ Section */}
+        {/* FAQ com tom profissional */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -902,9 +867,9 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
           className="bg-white rounded-2xl shadow-2xl p-8 mb-8"
         >
           <div className="text-center mb-8">
-            <HelpCircle className="w-12 h-12 text-purple-600 mx-auto mb-4" />
+            <HelpCircle className="w-12 h-12 text-blue-600 mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-gray-800 mb-2">Perguntas Frequentes</h3>
-            <p className="text-gray-600">Tire suas dúvidas sobre o Método AlíMax</p>
+            <p className="text-gray-600">Tire suas dúvidas sobre o Protocolo AlíMax</p>
           </div>
 
           <div className="space-y-4">
@@ -917,11 +882,11 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
                 className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
               >
                 <h4 className="font-semibold text-gray-800 mb-2 flex items-start gap-2">
-                  <span className="text-purple-600 font-bold">Q:</span>
+                  <span className="text-blue-600 font-bold">Q:</span>
                   {item.question}
                 </h4>
                 <p className="text-gray-600 text-sm leading-relaxed pl-6">
-                  <span className="text-purple-600 font-bold">R:</span> {item.answer}
+                  <span className="text-blue-600 font-bold">R:</span> {item.answer}
                 </p>
               </motion.div>
             ))}

@@ -140,7 +140,7 @@ const EmotionalPainSlider: React.FC<{
         onClick={() => onAnswer('painLevel', painLevel)}
         className={`w-full text-white font-bold py-4 px-8 rounded-xl text-lg transition-all shadow-lg bg-gradient-to-r ${currentLevel.color} hover:shadow-xl transform hover:scale-105`}
       >
-        Confirmar Nível de Dor: {currentLevel.label}
+         {currentLevel.label}
       </button>
 
       <style>{`
