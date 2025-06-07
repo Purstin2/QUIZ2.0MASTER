@@ -81,7 +81,7 @@ const EmotionalPainSlider: React.FC<{
           {/* Indicador personalizado */}
           <motion.div
             className="absolute top-1/2 w-8 h-8 bg-white rounded-full shadow-lg border-4 border-purple-500 transform -translate-y-1/2 -translate-x-1/2 flex items-center justify-center cursor-pointer"
-            style={{ left: `${(painLevel / 10) * 100}%` }}
+            style={{ left: `${(painLevel / 10) * 100}%`, top: 'calc(50% - 2px)' }}
             whileHover={{ scale: 1.2 }}
             whileTap={{ scale: 0.9 }}
             drag="x"
