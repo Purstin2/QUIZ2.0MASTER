@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, Users, Star } from 'lucide-react';
+import { Clock, Users } from 'lucide-react';
 import { QuizSteps } from './components/QuizSteps';
 import { QuizAnalysis } from './components/QuizAnalysis';
 import { QuizResults } from './components/QuizResults';
@@ -237,6 +237,18 @@ function App() {
     );
   }
 
+  // Array de fotos de perfil para o social proof
+  const profilePictures = [
+    "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=40&h=40&fit=crop&crop=face&auto=format",
+    "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face&auto=format",
+    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=40&h=40&fit=crop&crop=face&auto=format",
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face&auto=format",
+    "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=40&h=40&fit=crop&crop=face&auto=format",
+    "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=40&h=40&fit=crop&crop=face&auto=format",
+    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=40&h=40&fit=crop&crop=face&auto=format",
+    "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=40&h=40&fit=crop&crop=face&auto=format"
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
       {/* Header compacto */}
@@ -313,7 +325,7 @@ function App() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Social proof */}
+        {/* Social proof com fotos de perfil */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -321,19 +333,27 @@ function App() {
           className="text-center mt-8 text-white"
         >
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-4">
-            <div className="flex items-center justify-center gap-3 mb-3">
+            <div className="flex items-center justify-center gap-3 mb-4">
               <Users className="w-5 h-5" />
               <span className="font-medium">{recentUsers + Math.floor(Math.random() * 10)} pessoas fazendo a avaliação agora</span>
             </div>
+            
+            {/* Fotos de perfil em vez de estrelas */}
             <div className="flex items-center justify-center gap-2 mb-3">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-              ))}
+              <div className="flex -space-x-2">
+                {profilePictures.slice(0, 6).map((pic, i) => (
+                  <motion.img
+                    key={i}
+                    src={pic}
+                    alt={`Usuária ${i + 1}`}
+                    className="w-8 h-8 rounded-full border-2 border-white object-cover"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: i * 0.1 }}
+                  />
+                ))}
+              </div>
               <span className="ml-3 font-medium">4.9/5 ⭐ (8.247 avaliações)</span>
-            </div>
-            <div className="text-sm text-white/90 bg-purple-600/30 rounded-lg p-2">
-              💡 <strong>Sistema inteligente</strong> identifica seu perfil e libera oferta personalizada<br/>
-              <span className="text-xs">Quanto mais compatibilidade, melhor seu preço especial!</span>
             </div>
           </div>
           <div className="text-sm text-white/70">
