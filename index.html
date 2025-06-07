@@ -7,17 +7,60 @@
     <title>Quiz de Saúde - Yoga Terapêutica</title>
     <meta name="description" content="Descubra o método personalizado para eliminar suas dores corporais" />
     
-    <!-- Facebook Pixel - Temporarily commented out due to fetch error -->
-    <!--
+    <!-- Facebook Pixel com tratamento de erros robusto -->
     <script>
+      // Configuração do pixel
       window.pixelId = "6843b64211786d4284bbabab";
-      var a = document.createElement("script");
-      a.setAttribute("async", "");
-      a.setAttribute("defer", "");
-      a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
-      document.head.appendChild(a);
+      
+      // Função para carregar o script com retry e fallback
+      function loadPixelScript() {
+        return new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.setAttribute("async", "");
+          script.setAttribute("defer", "");
+          script.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
+          
+          // Timeout de 10 segundos
+          const timeout = setTimeout(() => {
+            script.remove();
+            reject(new Error('Script timeout'));
+          }, 10000);
+          
+          script.onload = () => {
+            clearTimeout(timeout);
+            resolve(true);
+          };
+          
+          script.onerror = () => {
+            clearTimeout(timeout);
+            script.remove();
+            reject(new Error('Script failed to load'));
+          };
+          
+          document.head.appendChild(script);
+        });
+      }
+      
+      // Fallback para quando o script não carrega
+      function initFallbackTracking() {
+        console.log('Pixel script failed to load, using fallback tracking');
+        window.utmify = function(action, event, data) {
+          console.log('Fallback tracking:', action, event, data);
+          // Aqui você pode implementar um tracking alternativo
+          // Por exemplo, enviar para Google Analytics ou outro serviço
+        };
+      }
+      
+      // Tentar carregar o script
+      loadPixelScript()
+        .then(() => {
+          console.log('Pixel script loaded successfully');
+        })
+        .catch((error) => {
+          console.warn('Pixel script failed to load:', error.message);
+          initFallbackTracking();
+        });
     </script>
-    -->
   </head>
   <body>
     <div id="root"></div>

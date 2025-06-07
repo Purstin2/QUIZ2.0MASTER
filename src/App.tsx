@@ -6,7 +6,7 @@ import { QuizAnalysis } from './components/QuizAnalysis';
 import { QuizResults } from './components/QuizResults';
 import { LoadingScreen } from './components/LoadingScreen';
 import { quizSteps } from './components/QuizData';
-import { trackQuizStart, trackQuizProgress, trackQuizComplete } from './lib/pixel';
+import { trackQuizStart, trackQuizProgress, trackQuizComplete, retryPendingEvents, checkPixelStatus } from './lib/pixel';
 
 function App() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -31,11 +31,18 @@ function App() {
   const [recentUsers] = useState(Math.floor(Math.random() * 50) + 200);
   const [hasTrackedStart, setHasTrackedStart] = useState(false);
 
-  // Track quiz start on component mount
+  // Track quiz start and check pixel status
   useEffect(() => {
     if (!hasTrackedStart) {
-      trackQuizStart();
-      setHasTrackedStart(true);
+      // Aguarda um pouco para o pixel carregar
+      const timer = setTimeout(() => {
+        checkPixelStatus();
+        trackQuizStart();
+        retryPendingEvents(); // Tenta reenviar eventos pendentes
+        setHasTrackedStart(true);
+      }, 1000);
+
+      return () => clearTimeout(timer);
     }
   }, [hasTrackedStart]);
 
