@@ -405,9 +405,9 @@ function App() {
 
   // Track quiz start and check pixel status
   useEffect(() => {
-    checkPixelStatus();
-    trackQuizStart();
-    retryPendingEvents();
+        checkPixelStatus();
+        trackQuizStart();
+        retryPendingEvents();
   }, []);
 
   // Timer countdown
@@ -542,7 +542,7 @@ function App() {
             <div className="text-white">
               <h3 className="font-bold">{GamificationSystem.calculateLevel(gamificationState.experiencePoints).name}</h3>
               <p className="text-sm text-white/80">Nível {GamificationSystem.calculateLevel(gamificationState.experiencePoints).level}</p>
-            </div>
+              </div>
             <div className="text-right">
               <div className="text-xl font-bold text-yellow-300">{userScore} XP</div>
             </div>
@@ -562,7 +562,7 @@ function App() {
           <div className="flex items-center justify-between text-sm text-white/80">
             <span>Pergunta {currentStep + 1} de 9</span>
           </div>
-
+          
           {/* Timer de urgência */}
           {timeLeft < 300 && (
             <div className="mt-3 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-300/30 rounded-lg p-2">

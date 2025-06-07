@@ -32,17 +32,17 @@ const EmotionalPainSlider: React.FC<{
   onAnswer: (field: string, value: any) => void;
 }> = ({ painLevel, onChange, onAnswer }) => {
   const painLevels = [
-    { value: 0, emoji: '😌', label: 'Sem dor', color: 'bg-green-500', description: 'Me sinto completamente bem' },
-    { value: 1, emoji: '😊', label: 'Desconforto mínimo', color: 'bg-green-500', description: 'Às vezes sinto algo, mas não me incomoda' },
-    { value: 2, emoji: '🙂', label: 'Leve incômodo', color: 'bg-yellow-500', description: 'Noto quando presto atenção' },
-    { value: 3, emoji: '😐', label: 'Incômodo presente', color: 'bg-yellow-500', description: 'Está sempre lá, mas consigo ignorar' },
-    { value: 4, emoji: '😕', label: 'Dor moderada', color: 'bg-orange-500', description: 'Interfere em algumas atividades' },
-    { value: 5, emoji: '😣', label: 'Dor considerável', color: 'bg-orange-500', description: 'Dificulta meu dia a dia' },
-    { value: 6, emoji: '😰', label: 'Dor intensa', color: 'bg-red-500', description: 'Afeta significativamente minha qualidade de vida' },
-    { value: 7, emoji: '😭', label: 'Dor severa', color: 'bg-red-500', description: 'Domina meus pensamentos constantemente' },
-    { value: 8, emoji: '😖', label: 'Dor muito severa', color: 'bg-red-500', description: 'Impede atividades básicas do dia' },
-    { value: 9, emoji: '😵', label: 'Dor insuportável', color: 'bg-red-500', description: 'Mal consigo funcionar normalmente' },
-    { value: 10, emoji: '🤕', label: 'Dor máxima', color: 'bg-red-500', description: 'É impossível ignorar ou conviver' }
+    { value: 0, emoji: '😌', label: 'Sem dor', color: 'from-green-400 to-green-500', description: 'Me sinto completamente bem' },
+    { value: 1, emoji: '😊', label: 'Desconforto mínimo', color: 'from-green-300 to-green-400', description: 'Às vezes sinto algo, mas não me incomoda' },
+    { value: 2, emoji: '🙂', label: 'Leve incômodo', color: 'from-yellow-300 to-yellow-400', description: 'Noto quando presto atenção' },
+    { value: 3, emoji: '😐', label: 'Incômodo presente', color: 'from-yellow-400 to-yellow-500', description: 'Está sempre lá, mas consigo ignorar' },
+    { value: 4, emoji: '😕', label: 'Dor moderada', color: 'from-orange-300 to-orange-400', description: 'Interfere em algumas atividades' },
+    { value: 5, emoji: '😣', label: 'Dor considerável', color: 'from-orange-400 to-orange-500', description: 'Dificulta meu dia a dia' },
+    { value: 6, emoji: '😰', label: 'Dor intensa', color: 'from-red-300 to-red-400', description: 'Afeta significativamente minha qualidade de vida' },
+    { value: 7, emoji: '😭', label: 'Dor severa', color: 'from-red-400 to-red-500', description: 'Domina meus pensamentos constantemente' },
+    { value: 8, emoji: '😖', label: 'Dor muito severa', color: 'from-red-500 to-red-600', description: 'Impede atividades básicas do dia' },
+    { value: 9, emoji: '😵', label: 'Dor insuportável', color: 'from-red-600 to-red-700', description: 'Mal consigo funcionar normalmente' },
+    { value: 10, emoji: '🤕', label: 'Dor máxima', color: 'from-red-700 to-red-800', description: 'É impossível ignorar ou conviver' }
   ];
   
   const currentLevel = painLevels[painLevel] || painLevels[0];
@@ -79,27 +79,27 @@ const EmotionalPainSlider: React.FC<{
     <div className="space-y-8">
       {/* Exibição visual da dor atual */}
       <motion.div 
-        className="text-center p-8 rounded-2xl bg-secondary shadow-lg"
+        className="text-center p-8 rounded-2xl bg-gradient-to-br from-white to-gray-50 shadow-lg"
         animate={{ scale: painLevel > 5 ? [1, 1.02, 1] : 1 }}
         transition={{ duration: 2, repeat: painLevel > 7 ? Infinity : 0 }}
       >
         <div className="text-8xl mb-4 filter drop-shadow-lg">
           {currentLevel.emoji}
         </div>
-        <div className={`text-3xl font-bold mb-2 ${currentLevel.color} bg-clip-text text-transparent`}>
+        <div className={`text-3xl font-bold mb-2 bg-gradient-to-r ${currentLevel.color} bg-clip-text text-transparent`}>
           Nível {painLevel}: {currentLevel.label}
         </div>
-        <p className="text-text_secondary text-lg italic">
+        <p className="text-gray-600 text-lg italic">
           "{currentLevel.description}"
         </p>
       </motion.div>
       
       {/* Slider interativo com zonas de cor */}
       <div className="relative px-4">
-        <div ref={trackRef} className="relative h-8 bg-neutral rounded-full shadow-inner">
+        <div ref={trackRef} className="relative h-8 bg-gradient-to-r from-green-200 via-yellow-300 via-orange-400 to-red-600 rounded-full shadow-inner">
           {/* A bolinha com o emoji AGORA é o único elemento arrastável e visível */}
           <motion.div
-            className="absolute top-1/2 w-8 h-8 bg-white rounded-full shadow-lg border-4 border-accent transform -translate-y-1/2 flex items-center justify-center cursor-grab" // Removendo -translate-x-1/2
+            className="absolute top-1/2 w-8 h-8 bg-white rounded-full shadow-lg border-4 border-purple-500 transform -translate-y-1/2 flex items-center justify-center cursor-grab" // Removendo -translate-x-1/2
             style={{ x }} // Controla a posição X diretamente com o motion value
             whileHover={{ scale: 1.2 }}
             whileTap={{ scale: 0.9 }}
@@ -113,7 +113,7 @@ const EmotionalPainSlider: React.FC<{
         </div>
         
         {/* Marcadores nas extremidades */}
-        <div className="flex justify-between text-sm text-text_secondary mt-3 px-2">
+        <div className="flex justify-between text-sm text-gray-500 mt-3 px-2">
           <span className="flex items-center gap-1">
             <span>😌</span> Sem dor
           </span>
@@ -128,9 +128,9 @@ const EmotionalPainSlider: React.FC<{
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-danger/10 border border-danger p-4 rounded-lg"
+          className="bg-red-50 border border-red-200 p-4 rounded-lg"
         >
-          <p className="text-danger font-medium text-center">
+          <p className="text-red-800 font-medium text-center">
             ⚠️ Dor nível {painLevel} indica necessidade de atenção imediata
           </p>
         </motion.div>
@@ -138,7 +138,7 @@ const EmotionalPainSlider: React.FC<{
       
       <button
         onClick={() => onAnswer('painLevel', painLevel)}
-        className={`w-full bg-accent text-white font-bold py-4 px-8 rounded-xl text-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105`}
+        className={`w-full text-white font-bold py-4 px-8 rounded-xl text-lg transition-all shadow-lg bg-gradient-to-r ${currentLevel.color} hover:shadow-xl transform hover:scale-105`}
       >
          {currentLevel.label}
       </button>
@@ -175,38 +175,38 @@ const TrustIndicators: React.FC = () => {
   return (
     <div className="mt-8 space-y-4">
       {/* Selos de segurança */}
-      <div className="flex justify-center items-center gap-6 text-sm text-text_secondary">
+      <div className="flex justify-center items-center gap-6 text-sm text-white/70">
         <div className="flex items-center gap-2">
-          <Shield className="w-5 h-5 text-success" />
+          <Shield className="w-5 h-5 text-green-400" />
           <span>SSL Seguro</span>
         </div>
         <div className="flex items-center gap-2">
-          <CheckCircle className="w-5 h-5 text-accent" />
+          <CheckCircle className="w-5 h-5 text-blue-400" />
           <span>CNPJ Verificado</span>
         </div>
         <div className="flex items-center gap-2">
-          <Users className="w-5 h-5 text-accent" />
+          <Users className="w-5 h-5 text-purple-400" />
           <span>15.000+ Clientes</span>
         </div>
       </div>
       
       {/* Indicador de privacidade */}
-      <div className="bg-secondary/70 backdrop-blur-sm rounded-lg p-4 text-center">
+      <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center">
         <div className="flex items-center justify-center gap-2 mb-2">
-          <Lock className="w-5 h-5 text-success" />
-          <span className="font-medium text-text_primary">Seus dados estão protegidos</span>
+          <Lock className="w-5 h-5 text-green-400" />
+          <span className="font-medium text-white">Seus dados estão protegidos</span>
         </div>
-        <p className="text-text_secondary text-xs">
+        <p className="text-white/70 text-xs">
           Utilizamos criptografia SSL 256-bits e não compartilhamos informações pessoais
         </p>
       </div>
       
       {/* Certificações */}
       <div className="flex justify-center gap-4">
-        <div className="bg-secondary/70 px-3 py-2 rounded-lg text-xs text-text_secondary">
+        <div className="bg-white/10 px-3 py-2 rounded-lg text-xs text-white/80">
           🏥 Método Aprovado por Fisioterapeutas
         </div>
-        <div className="bg-secondary/70 px-3 py-2 rounded-lg text-xs text-text_secondary">
+        <div className="bg-white/10 px-3 py-2 rounded-lg text-xs text-white/80">
           📜 Registro CNPJ: 12.345.678/0001-90
         </div>
       </div>
@@ -317,25 +317,25 @@ export const QuizSteps: React.FC<QuizStepsProps> = ({
     return (
       <div className="space-y-8">
         <div className="text-center">
-          <div className="w-20 h-20 bg-accent rounded-full mx-auto mb-6 flex items-center justify-center">
+          <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full mx-auto mb-6 flex items-center justify-center">
             <Mail className="w-10 h-10 text-white" />
           </div>
-          <div className="bg-neutral/20 border border-neutral/50 rounded-lg p-4 mb-6">
-            <p className="text-text_primary font-medium text-center">
+          <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-6">
+            <p className="text-purple-800 font-medium text-center">
               🎯 Baseado em suas respostas, você tem <strong>89% de compatibilidade</strong> com nosso método mais eficaz
             </p>
             <div className="text-center mt-3">
-              <span className="bg-neutral/30 text-text_secondary px-3 py-1 rounded-full text-sm font-bold">
-                ✨ {userScore} pontos na avaliação • Análise personalizada desbloqueada
+              <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-bold">
+                ✨ {userScore} pontos conquistados • Oferta especial desbloqueada
               </span>
             </div>
           </div>
 
           {/* Mostrar commitments se existirem */}
           {commitments.length > 0 && (
-            <div className="bg-success/10 border border-success text-success p-4 rounded-lg">
-              <h4 className="font-bold text-success mb-2">✅ Seus Compromissos:</h4>
-              <div className="space-y-1 text-success text-sm">
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+              <h4 className="font-bold text-green-800 mb-2">✅ Seus Compromissos:</h4>
+              <div className="space-y-1 text-green-700 text-sm">
                 {commitments.map((commitment, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4" />
@@ -356,12 +356,14 @@ export const QuizSteps: React.FC<QuizStepsProps> = ({
               if (emailError) setEmailError(''); // Clear error when user types
             }}
             placeholder="Digite seu melhor e-mail"
-            className={`w-full px-6 py-4 border-2 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none text-lg transition-all bg-secondary/70 text-text_primary ${emailError ? 'border-danger' : 'border-secondary/50'}`}
+            className={`w-full px-6 py-4 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none text-lg transition-all ${
+              emailError ? 'border-red-500' : 'border-gray-300'
+            }`}
             disabled={isSubmitting}
           />
           
           {emailError && (
-            <div className="text-danger text-sm text-center bg-danger/10 p-3 rounded-lg">
+            <div className="text-red-600 text-sm text-center bg-red-50 p-3 rounded-lg">
               {emailError}
             </div>
           )}
@@ -370,7 +372,7 @@ export const QuizSteps: React.FC<QuizStepsProps> = ({
         <button
           onClick={handleEmailSubmit}
           disabled={!answers.email.includes('@') || isSubmitting}
-          className="w-full bg-accent hover:bg-accent/90 disabled:bg-neutral/50 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all shadow-lg flex items-center justify-center gap-3"
+          className="w-full bg-purple-700 hover:bg-purple-800 disabled:bg-gray-300 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all shadow-lg flex items-center justify-center gap-3"
         >
           {isSubmitting ? (
             <>
@@ -379,7 +381,7 @@ export const QuizSteps: React.FC<QuizStepsProps> = ({
             </>
           ) : (
             <>
-              Receber Análise Personalizada
+              Receber Método Personalizado
               <ChevronRight className="w-6 h-6" />
             </>
           )}
@@ -404,20 +406,20 @@ export const QuizSteps: React.FC<QuizStepsProps> = ({
           <motion.button
             key={option.value}
             onClick={() => handleOptionClick(option.value)}
-            className="w-full flex items-center gap-4 p-4 border-2 border-secondary/50 rounded-xl hover:border-accent hover:bg-accent/10 transition-all group shadow-sm bg-secondary/70 text-text_primary"
+            className="w-full flex items-center gap-4 p-4 border-2 border-gray-200 rounded-xl hover:border-purple-600 hover:bg-purple-50 transition-all group shadow-sm"
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.99 }}
           >
-            <div className="w-12 h-12 rounded-xl bg-neutral/20 group-hover:bg-accent/70 group-hover:text-white flex items-center justify-center text-2xl transition-all flex-shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-100 to-purple-200 group-hover:from-purple-600 group-hover:to-purple-700 group-hover:text-white flex items-center justify-center text-2xl transition-all flex-shrink-0">
               {option.emoji}
             </div>
             <div className="text-left flex-1">
-              <div className="font-bold text-text_primary text-base mb-1">{option.label}</div>
+              <div className="font-bold text-gray-800 text-base mb-1">{option.label}</div>
               {option.desc && (
-                <div className="text-text_secondary text-sm">{option.desc}</div>
+                <div className="text-gray-600 text-sm">{option.desc}</div>
               )}
             </div>
-            <ChevronRight className="w-5 h-5 text-text_secondary group-hover:text-accent flex-shrink-0" />
+            <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-purple-600 flex-shrink-0" />
           </motion.button>
         ))}
       </div>
