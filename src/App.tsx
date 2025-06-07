@@ -7,6 +7,7 @@ import { QuizResults } from './components/QuizResults';
 import { LoadingScreen } from './components/LoadingScreen';
 import { quizSteps } from './components/QuizData';
 import { trackQuizStart, trackQuizProgress, trackQuizComplete, retryPendingEvents, checkPixelStatus, trackPixelEvent } from './lib/pixel';
+import confetti from 'canvas-confetti';
 
 // Sistema de Gamificação Avançado
 interface GamificationState {
@@ -453,6 +454,14 @@ function App() {
     
     // Próxima pergunta
     if (currentStep < quizSteps.length - 1) {
+      // Disparar confetes roxos
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#9333ea', '#7e22ce', '#6b21a8']
+      });
+      
       setCurrentStep(prev => prev + 1);
       console.log('Moving to next step:', currentStep + 1);
     } else {

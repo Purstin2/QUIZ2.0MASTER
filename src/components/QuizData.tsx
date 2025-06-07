@@ -73,13 +73,13 @@ export const quizSteps = [
   },
   {
     id: 'investment',
-    title: 'Você estaria disposta a investir um valor simbólico para eliminar suas dores definitivamente?',
-    subtitle: 'Queremos entender se nossa solução faz sentido para seu momento atual',
+    title: 'Quanto você investe em sua saúde atualmente?',
+    subtitle: 'Isso nos ajuda a entender melhor suas prioridades',
     options: [
-      { value: 'yes', label: 'Sim, se for algo acessível', emoji: '💚', desc: 'Priorizo minha saúde e bem-estar' },
-      { value: 'maybe', label: 'Depende do valor', emoji: '🤔', desc: 'Preciso avaliar custo x benefício' },
-      { value: 'budget', label: 'Tenho orçamento limitado', emoji: '💰', desc: 'Busco algo muito em conta' },
-      { value: 'unsure', label: 'Preciso pensar melhor', emoji: '⏰', desc: 'Ainda estou decidindo' }
+      { value: 'yes', label: 'Invisto regularmente', emoji: '💚', desc: 'Saúde é prioridade para mim' },
+      { value: 'maybe', label: 'Investimento moderado', emoji: '🤔', desc: 'Busco equilíbrio' },
+      { value: 'budget', label: 'Investimento básico', emoji: '💰', desc: 'Foco em prevenção' },
+      { value: 'unsure', label: 'Não tenho certeza', emoji: '⏰', desc: 'Estou avaliando opções' }
     ]
   }
 ];
