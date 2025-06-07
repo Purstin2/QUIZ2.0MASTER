@@ -53,14 +53,14 @@ export async function checkEmailExists(email: string) {
       .from('quiz_responses')
       .select('email')
       .eq('email', email)
-      .single()
+      .limit(1)
 
-    if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+    if (error) {
       console.error('Error checking email:', error)
       throw error
     }
 
-    return !!data // Returns true if email exists, false otherwise
+    return data && data.length > 0 // Returns true if email exists, false otherwise
   } catch (error) {
     console.error('Failed to check email:', error)
     return false
