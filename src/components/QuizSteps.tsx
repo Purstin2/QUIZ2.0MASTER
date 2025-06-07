@@ -1,6 +1,7 @@
-import React from 'react';
-import { ChevronRight, Mail } from 'lucide-react';
+import React, { useState } from 'react';
+import { ChevronRight, Mail, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { saveQuizResponse, checkEmailExists } from '../lib/supabase';
 
 interface QuizStep {
   id: string;
@@ -30,6 +31,9 @@ export const QuizSteps: React.FC<QuizStepsProps> = ({
   onAnswersChange,
   userScore 
 }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [emailError, setEmailError] = useState('');
+
   const getPainEmoji = (level: number) => {
     if (level <= 2) return '😊';
     if (level <= 4) return '😐';
@@ -44,6 +48,53 @@ export const QuizSteps: React.FC<QuizStepsProps> = ({
     if (level <= 6) return 'Dor considerável';
     if (level <= 8) return 'Dor intensa';
     return 'Dor muito intensa';
+  };
+
+  const handleEmailSubmit = async () => {
+    if (!answers.email || !answers.email.includes('@')) {
+      setEmailError('Por favor, digite um email válido');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setEmailError('');
+
+    try {
+      // Check if email already exists
+      const emailExists = await checkEmailExists(answers.email);
+      
+      if (emailExists) {
+        setEmailError('Este email já foi usado. Tente outro email.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Prepare data for Supabase
+      const quizData = {
+        email: answers.email,
+        age: answers.age,
+        pain_level: answers.painLevel,
+        main_problem: answers.mainProblem,
+        duration: answers.duration,
+        previous_treatment: answers.previousTreatment,
+        lifestyle: answers.lifestyle,
+        time_available: answers.timeAvailable,
+        investment: answers.investment,
+        user_score: userScore
+      };
+
+      // Save to Supabase
+      await saveQuizResponse(quizData);
+      
+      // Continue with the quiz flow
+      onAnswer('email', answers.email);
+      
+    } catch (error) {
+      console.error('Error saving quiz response:', error);
+      setEmailError('Erro ao salvar dados. Tente novamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Slider para dor
@@ -82,7 +133,7 @@ export const QuizSteps: React.FC<QuizStepsProps> = ({
     );
   }
 
-  // Input de email
+  // Input de email com integração Supabase
   if (currentStep.type === 'email') {
     return (
       <div className="space-y-8">
@@ -102,21 +153,44 @@ export const QuizSteps: React.FC<QuizStepsProps> = ({
           </div>
         </div>
 
-        <input
-          type="email"
-          value={answers.email}
-          onChange={(e) => onAnswersChange({ ...answers, email: e.target.value })}
-          placeholder="Digite seu melhor e-mail"
-          className="w-full px-6 py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none text-lg"
-        />
+        <div className="space-y-4">
+          <input
+            type="email"
+            value={answers.email}
+            onChange={(e) => {
+              onAnswersChange({ ...answers, email: e.target.value });
+              if (emailError) setEmailError(''); // Clear error when user types
+            }}
+            placeholder="Digite seu melhor e-mail"
+            className={`w-full px-6 py-4 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none text-lg transition-all ${
+              emailError ? 'border-red-500' : 'border-gray-300'
+            }`}
+            disabled={isSubmitting}
+          />
+          
+          {emailError && (
+            <div className="text-red-600 text-sm text-center bg-red-50 p-3 rounded-lg">
+              {emailError}
+            </div>
+          )}
+        </div>
 
         <button
-          onClick={() => onAnswer('email', answers.email)}
-          disabled={!answers.email.includes('@')}
+          onClick={handleEmailSubmit}
+          disabled={!answers.email.includes('@') || isSubmitting}
           className="w-full bg-purple-700 hover:bg-purple-800 disabled:bg-gray-300 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all shadow-lg flex items-center justify-center gap-3"
         >
-          Receber Método Personalizado
-          <ChevronRight className="w-6 h-6" />
+          {isSubmitting ? (
+            <>
+              <Loader2 className="w-6 h-6 animate-spin" />
+              Salvando dados...
+            </>
+          ) : (
+            <>
+              Receber Método Personalizado
+              <ChevronRight className="w-6 h-6" />
+            </>
+          )}
         </button>
 
         <div className="text-center">
