@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ChevronRight, Mail, Loader2, CheckCircle, Shield, Users, Lock } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { saveQuizResponse, checkEmailExists } from '../lib/supabase';
 import { trackEmailCapture, trackPixelEvent } from '../lib/pixel';
 
@@ -46,6 +46,33 @@ const EmotionalPainSlider: React.FC<{
   ];
   
   const currentLevel = painLevels[painLevel] || painLevels[0];
+  const trackRef = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+
+  const transformedPainLevel = useTransform(x, (latestX) => {
+    if (trackRef.current) {
+      const trackWidth = trackRef.current.clientWidth;
+      const percentage = Math.max(0, Math.min(1, latestX / trackWidth));
+      return Math.round(percentage * 10);
+    }
+    return painLevel;
+  });
+
+  useEffect(() => {
+    const unsubscribe = transformedPainLevel.onChange((latestValue) => {
+      if (latestValue !== painLevel) {
+        onChange(latestValue);
+      }
+    });
+    return () => unsubscribe();
+  }, [transformedPainLevel, painLevel, onChange]);
+
+  useEffect(() => {
+    if (trackRef.current) {
+      const trackWidth = trackRef.current.clientWidth;
+      x.set((painLevel / 10) * trackWidth);
+    }
+  }, [painLevel, x, trackRef.current?.clientWidth]);
   
   return (
     <div className="space-y-8">
@@ -68,7 +95,7 @@ const EmotionalPainSlider: React.FC<{
       
       {/* Slider interativo com zonas de cor */}
       <div className="relative px-4">
-        <div className="relative h-8 bg-gradient-to-r from-green-200 via-yellow-300 via-orange-400 to-red-600 rounded-full shadow-inner">
+        <div ref={trackRef} className="relative h-8 bg-gradient-to-r from-green-200 via-yellow-300 via-orange-400 to-red-600 rounded-full shadow-inner">
           <input
             type="range"
             min="0"
@@ -81,19 +108,14 @@ const EmotionalPainSlider: React.FC<{
           {/* Indicador personalizado */}
           <motion.div
             className="absolute top-1/2 w-8 h-8 bg-white rounded-full shadow-lg border-4 border-purple-500 transform -translate-y-1/2 -translate-x-1/2 flex items-center justify-center cursor-pointer"
-            style={{ left: `${(painLevel / 10) * 100}%`, top: 'calc(50% - 2px)' }}
+            style={{ left: `${(painLevel / 10) * 100}%` }}
             whileHover={{ scale: 1.2 }}
             whileTap={{ scale: 0.9 }}
             drag="x"
-            dragConstraints={{ left: 0, right: 0 }} // Limita o arraste apenas horizontalmente
-            onDrag={(event, info) => {
-              const targetElement = event.currentTarget as HTMLElement; // Casting para HTMLElement
-              const parentWidth = targetElement.parentElement?.clientWidth || 1; // Acesso seguro e fallback
-              const newValue = Math.round((info.point.x / parentWidth) * 10); // Calcula o novo valor baseado na posição do arraste
-              onChange(Math.max(0, Math.min(10, newValue))); // Garante que o valor esteja entre 0 e 10
-            }}
+            dragConstraints={trackRef}
             dragElastic={0}
             dragMomentum={false}
+            onPointerDown={() => x.set((painLevel / 10) * (trackRef.current?.clientWidth || 0))}
           >
             <span className="text-sm">{currentLevel.emoji}</span>
           </motion.div>
