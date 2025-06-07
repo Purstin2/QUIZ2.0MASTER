@@ -4,6 +4,7 @@ import { Clock, Users, Star } from 'lucide-react';
 import { QuizSteps } from './components/QuizSteps';
 import { QuizAnalysis } from './components/QuizAnalysis';
 import { QuizResults } from './components/QuizResults';
+import { LoadingScreen } from './components/LoadingScreen';
 import { quizSteps } from './components/QuizData';
 
 function App() {
@@ -23,12 +24,10 @@ function App() {
   });
   const [showResults, setShowResults] = useState(false);
   const [showAnalysis, setShowAnalysis] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
   const [analysisStep, setAnalysisStep] = useState(0);
   const [timeLeft, setTimeLeft] = useState(600);
   const [recentUsers] = useState(Math.floor(Math.random() * 50) + 200);
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState(0);
-  const [loadingMessage, setLoadingMessage] = useState('Processando dados...');
 
   // Timer para atualizar usuários online
   useEffect(() => {
@@ -168,9 +167,9 @@ function App() {
         runAnalysis();
       }, 300);
     } else if (currentStep === 8) {
-      // Última pergunta - vai para resultados
+      // Última pergunta - vai para loading e depois resultados
       setTimeout(() => {
-        setShowResults(true);
+        setShowLoading(true);
       }, 300);
     } else {
       // Avança para próxima pergunta
@@ -195,6 +194,21 @@ function App() {
     }, 1200);
   };
 
+  const handleLoadingComplete = () => {
+    setShowLoading(false);
+    setShowResults(true);
+  };
+
+  if (showLoading) {
+    return (
+      <LoadingScreen 
+        userScore={userScore} 
+        onComplete={handleLoadingComplete}
+        duration={5000} // 5 segundos
+      />
+    );
+  }
+
   if (showAnalysis) {
     return <QuizAnalysis answers={answers} analysisStep={analysisStep} userScore={userScore} />;
   }
@@ -213,74 +227,13 @@ function App() {
   const currentStepData = quizSteps[currentStep];
 
   if (!currentStepData) {
-    // Auto avança para resultados com loading melhorado
-    if (!isLoading) {
-      setIsLoading(true);
-      
-      // Mensagens que mudam durante o loading
-      const messages = [
-        'Processando dados...',
-        'Analisando seu perfil...',
-        'Identificando padrões...',
-        'Personalizando método...',
-        'Finalizando análise...'
-      ];
-      
-      // Atualiza progresso e mensagens
-      const progressInterval = setInterval(() => {
-        setLoadingProgress(prev => {
-          const newProgress = prev + 2;
-          
-          // Muda mensagem baseada no progresso
-          if (newProgress >= 80) setLoadingMessage(messages[4]);
-          else if (newProgress >= 60) setLoadingMessage(messages[3]);
-          else if (newProgress >= 40) setLoadingMessage(messages[2]);
-          else if (newProgress >= 20) setLoadingMessage(messages[1]);
-          else setLoadingMessage(messages[0]);
-          
-          if (newProgress >= 100) {
-            clearInterval(progressInterval);
-            return 100;
-          }
-          return newProgress;
-        });
-      }, 100);
-      
-      setTimeout(() => {
-        setLoadingProgress(100);
-        setTimeout(() => {
-          setShowResults(true);
-          setIsLoading(false);
-          setLoadingProgress(0);
-          setLoadingMessage('Processando dados...');
-        }, 500);
-      }, 5000);
-    }
-    
+    // Se não há mais perguntas, mostra loading
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 flex items-center justify-center">
-        <div className="text-white text-center max-w-md mx-auto px-4">
-          <div className="text-2xl font-bold mb-6">Finalizando sua avaliação...</div>
-          
-          <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
-          
-          <div className="text-lg mb-4">{loadingMessage}</div>
-          
-          {/* Barra de progresso */}
-          <div className="w-full bg-white/20 rounded-full h-2 mb-4">
-            <motion.div 
-              className="bg-white rounded-full h-2"
-              initial={{ width: 0 }}
-              animate={{ width: `${loadingProgress}%` }}
-              transition={{ duration: 0.1 }}
-            />
-          </div>
-          
-          <div className="text-sm text-white/80">
-            {userScore} pontos coletados • {Math.round(loadingProgress)}% concluído
-          </div>
-        </div>
-      </div>
+      <LoadingScreen 
+        userScore={userScore} 
+        onComplete={handleLoadingComplete}
+        duration={5000}
+      />
     );
   }
 
