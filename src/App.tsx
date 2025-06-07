@@ -588,12 +588,20 @@ function App() {
           className="text-center mt-8 text-white"
         >
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-4">
-            <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="flex items-center justify-center gap-3 mb-2">
               <Users className="w-5 h-5" />
               <span className="font-medium">{recentUsers + Math.floor(Math.random() * 10)} pessoas fazendo a avaliação agora</span>
             </div>
+            {/* Estrelas para credibilidade */}
+            <div className="flex items-center justify-center gap-1 text-yellow-400 mb-3">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-4 h-4 fill-current" />
+              ))}
+              <span className="ml-1 font-bold text-white">4.9/5</span>
+              <span className="text-white/80">(8.247 avaliações)</span>
+            </div>
             
-            {/* Fotos de perfil em vez de estrelas */}
+            {/* Fotos de perfil */}
             <div className="flex items-center justify-center gap-2 mb-3">
               <div className="flex -space-x-2">
                 {profilePictures.slice(0, 6).map((pic, i) => (
