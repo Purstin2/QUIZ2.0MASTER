@@ -25,6 +25,104 @@ interface QuizStepsProps {
   userScore: number;
 }
 
+// Slider de Dor Emocional Avançado
+const EmotionalPainSlider: React.FC<{ 
+  painLevel: number; 
+  onChange: (value: number) => void;
+  onAnswer: (field: string, value: any) => void;
+}> = ({ painLevel, onChange, onAnswer }) => {
+  const painLevels = [
+    { value: 0, emoji: '😌', label: 'Sem dor', color: 'from-green-400 to-green-500', description: 'Me sinto completamente bem' },
+    { value: 1, emoji: '😊', label: 'Desconforto mínimo', color: 'from-green-300 to-green-400', description: 'Às vezes sinto algo, mas não me incomoda' },
+    { value: 2, emoji: '🙂', label: 'Leve incômodo', color: 'from-yellow-300 to-yellow-400', description: 'Noto quando presto atenção' },
+    { value: 3, emoji: '😐', label: 'Incômodo presente', color: 'from-yellow-400 to-yellow-500', description: 'Está sempre lá, mas consigo ignorar' },
+    { value: 4, emoji: '😕', label: 'Dor moderada', color: 'from-orange-300 to-orange-400', description: 'Interfere em algumas atividades' },
+    { value: 5, emoji: '😣', label: 'Dor considerável', color: 'from-orange-400 to-orange-500', description: 'Dificulta meu dia a dia' },
+    { value: 6, emoji: '😰', label: 'Dor intensa', color: 'from-red-300 to-red-400', description: 'Afeta significativamente minha qualidade de vida' },
+    { value: 7, emoji: '😭', label: 'Dor severa', color: 'from-red-400 to-red-500', description: 'Domina meus pensamentos constantemente' },
+    { value: 8, emoji: '😖', label: 'Dor muito severa', color: 'from-red-500 to-red-600', description: 'Impede atividades básicas do dia' },
+    { value: 9, emoji: '😵', label: 'Dor insuportável', color: 'from-red-600 to-red-700', description: 'Mal consigo funcionar normalmente' },
+    { value: 10, emoji: '🤕', label: 'Dor máxima', color: 'from-red-700 to-red-800', description: 'É impossível ignorar ou conviver' }
+  ];
+  
+  const currentLevel = painLevels[painLevel];
+  
+  return (
+    <div className="space-y-8">
+      {/* Exibição visual da dor atual */}
+      <motion.div 
+        className="text-center p-8 rounded-2xl bg-gradient-to-br from-white to-gray-50 shadow-lg"
+        animate={{ scale: painLevel > 5 ? [1, 1.02, 1] : 1 }}
+        transition={{ duration: 2, repeat: painLevel > 7 ? Infinity : 0 }}
+      >
+        <div className="text-8xl mb-4 filter drop-shadow-lg">
+          {currentLevel.emoji}
+        </div>
+        <div className={`text-3xl font-bold mb-2 bg-gradient-to-r ${currentLevel.color} bg-clip-text text-transparent`}>
+          Nível {painLevel}: {currentLevel.label}
+        </div>
+        <p className="text-gray-600 text-lg italic">
+          "{currentLevel.description}"
+        </p>
+      </motion.div>
+      
+      {/* Slider interativo com zonas de cor */}
+      <div className="relative px-4">
+        <div className="relative h-8 bg-gradient-to-r from-green-200 via-yellow-300 via-orange-400 to-red-600 rounded-full shadow-inner">
+          <input
+            type="range"
+            min="0"
+            max="10"
+            value={painLevel}
+            onChange={(e) => onChange(parseInt(e.target.value))}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          />
+          
+          {/* Indicador personalizado */}
+          <motion.div
+            className="absolute top-1/2 w-8 h-8 bg-white rounded-full shadow-lg border-4 border-purple-500 transform -translate-y-1/2 -translate-x-1/2 flex items-center justify-center cursor-pointer"
+            style={{ left: `${(painLevel / 10) * 100}%` }}
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <span className="text-sm">{currentLevel.emoji}</span>
+          </motion.div>
+        </div>
+        
+        {/* Marcadores nas extremidades */}
+        <div className="flex justify-between text-sm text-gray-500 mt-3 px-2">
+          <span className="flex items-center gap-1">
+            <span>😌</span> Sem dor
+          </span>
+          <span className="flex items-center gap-1">
+            <span>🤕</span> Dor máxima
+          </span>
+        </div>
+      </div>
+      
+      {/* Contextualização baseada na dor */}
+      {painLevel >= 7 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-red-50 border border-red-200 p-4 rounded-lg"
+        >
+          <p className="text-red-800 font-medium text-center">
+            ⚠️ Dor nível {painLevel} indica necessidade de atenção imediata
+          </p>
+        </motion.div>
+      )}
+      
+      <button
+        onClick={() => onAnswer('painLevel', painLevel)}
+        className={`w-full text-white font-bold py-4 px-8 rounded-xl text-lg transition-all shadow-lg bg-gradient-to-r ${currentLevel.color} hover:shadow-xl transform hover:scale-105`}
+      >
+        Confirmar Nível de Dor: {currentLevel.label}
+      </button>
+    </div>
+  );
+};
+
 // Componente de Commitment Escalation
 const CommitmentEscalation: React.FC<{ 
   answers: any; 
@@ -217,39 +315,14 @@ export const QuizSteps: React.FC<QuizStepsProps> = ({
     return <CommitmentEscalation answers={answers} onCommitment={handleCommitmentComplete} />;
   }
 
-  // Slider para dor
+  // Slider para dor com versão emocional avançada
   if (currentStep.type === 'slider') {
     return (
-      <div className="space-y-8">
-        <div className="text-center">
-          <div className="text-8xl mb-4">{getPainEmoji(answers.painLevel)}</div>
-          <div className="text-3xl font-bold text-purple-600 mb-2">{answers.painLevel}/10</div>
-          <div className="text-lg text-gray-600">{getPainText(answers.painLevel)}</div>
-        </div>
-        
-        <div className="relative px-4">
-          <input
-            type="range"
-            min="0"
-            max="10"
-            value={answers.painLevel}
-            onChange={(e) => onAnswersChange({ ...answers, painLevel: parseInt(e.target.value) })}
-            className="w-full h-4 bg-gradient-to-r from-green-200 via-yellow-200 to-red-200 rounded-lg appearance-none cursor-pointer slider"
-          />
-        </div>
-        
-        <div className="flex justify-between text-sm text-gray-500 px-4">
-          <span>😊 Sem dor</span>
-          <span>😭 Dor máxima</span>
-        </div>
-
-        <button
-          onClick={() => onAnswer('painLevel', answers.painLevel)}
-          className="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all shadow-lg"
-        >
-          Continuar Avaliação
-        </button>
-      </div>
+      <EmotionalPainSlider 
+        painLevel={answers.painLevel}
+        onChange={(value) => onAnswersChange({ ...answers, painLevel: value })}
+        onAnswer={onAnswer}
+      />
     );
   }
 

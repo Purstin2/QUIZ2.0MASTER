@@ -1,12 +1,306 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, Users } from 'lucide-react';
+import { Clock, Users, Award, Star, TrendingUp } from 'lucide-react';
 import { QuizSteps } from './components/QuizSteps';
 import { QuizAnalysis } from './components/QuizAnalysis';
 import { QuizResults } from './components/QuizResults';
 import { LoadingScreen } from './components/LoadingScreen';
 import { quizSteps } from './components/QuizData';
-import { trackQuizStart, trackQuizProgress, trackQuizComplete, retryPendingEvents, checkPixelStatus } from './lib/pixel';
+import { trackQuizStart, trackQuizProgress, trackQuizComplete, retryPendingEvents, checkPixelStatus, trackPixelEvent } from './lib/pixel';
+
+// Sistema de Gamificação Avançado
+interface GamificationState {
+  level: number;
+  experiencePoints: number;
+  badges: string[];
+  streak: number;
+  milestones: string[];
+  powerUps: string[];
+}
+
+const GamificationSystem = {
+  levels: [
+    { level: 1, name: "Iniciante Determinada", minXP: 0, color: "gray" },
+    { level: 2, name: "Exploradora Corajosa", minXP: 50, color: "blue" },
+    { level: 3, name: "Guerreira em Formação", minXP: 120, color: "purple" },
+    { level: 4, name: "Especialista em Autocuidado", minXP: 200, color: "gold" },
+    { level: 5, name: "Mestre da Transformação", minXP: 300, color: "diamond" }
+  ],
+  
+  badges: [
+    { id: 'first_step', name: '👣 Primeiro Passo', description: 'Iniciou sua jornada', trigger: 'quiz_start' },
+    { id: 'pain_warrior', name: '⚔️ Guerreira da Dor', description: 'Enfrentou suas dores', trigger: 'pain_level_high' },
+    { id: 'truth_seeker', name: '🔍 Buscadora da Verdade', description: 'Respondeu honestamente', trigger: 'quiz_middle' },
+    { id: 'commitment_master', name: '🎯 Mestre do Compromisso', description: 'Comprometeu-se totalmente', trigger: 'all_commitments' },
+    { id: 'transformation_ready', name: '🦋 Pronta para Transformar', description: 'Completou toda avaliação', trigger: 'quiz_complete' },
+    { id: 'action_taker', name: '⚡ Mulher de Ação', description: 'Investiu na sua saúde', trigger: 'purchase' }
+  ],
+
+  calculateLevel: (xp: number) => {
+    return [...GamificationSystem.levels].reverse().find(level => xp >= level.minXP) || GamificationSystem.levels[0];
+  },
+
+  awardBadge: (badgeId: string, currentBadges: string[]) => {
+    if (!currentBadges.includes(badgeId)) {
+      const badge = GamificationSystem.badges.find(b => b.id === badgeId);
+      if (badge) {
+        return [...currentBadges, badgeId];
+      }
+    }
+    return currentBadges;
+  }
+};
+
+// Componente de Display da Gamificação
+const GamificationDisplay: React.FC<{ 
+  state: GamificationState; 
+  onUpdate: (state: GamificationState) => void;
+}> = ({ state }) => {
+  const currentLevel = GamificationSystem.calculateLevel(state.experiencePoints);
+  const nextLevel = GamificationSystem.levels.find(l => l.level === currentLevel.level + 1);
+  const progressToNext = nextLevel ? 
+    ((state.experiencePoints - currentLevel.minXP) / (nextLevel.minXP - currentLevel.minXP)) * 100 : 100;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-4 rounded-xl mb-6 shadow-lg"
+    >
+      <div className="flex items-center justify-between mb-3">
+        <div>
+          <h3 className="font-bold text-lg">{currentLevel.name}</h3>
+          <p className="text-purple-100 text-sm">Nível {currentLevel.level}</p>
+        </div>
+        <div className="text-right">
+          <div className="text-2xl font-bold">{state.experiencePoints} XP</div>
+          {nextLevel && (
+            <div className="text-xs text-purple-200">
+              Faltam {nextLevel.minXP - state.experiencePoints} para o próximo nível
+            </div>
+          )}
+        </div>
+      </div>
+      
+      {/* Barra de progresso para próximo nível */}
+      {nextLevel && (
+        <div className="w-full bg-white/20 rounded-full h-2 mb-3">
+          <motion.div
+            className="bg-yellow-400 h-2 rounded-full"
+            initial={{ width: 0 }}
+            animate={{ width: `${progressToNext}%` }}
+            transition={{ duration: 1 }}
+          />
+        </div>
+      )}
+      
+      {/* Badges conquistados */}
+      {state.badges.length > 0 && (
+        <div className="flex gap-2 mb-3">
+          <span className="text-sm text-purple-200">Conquistas:</span>
+          {state.badges.slice(-3).map(badgeId => {
+            const badge = GamificationSystem.badges.find(b => b.id === badgeId);
+            return badge ? (
+              <motion.span
+                key={badgeId}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="bg-white/20 px-2 py-1 rounded-full text-xs flex items-center gap-1"
+                title={badge.description}
+              >
+                {badge.name}
+              </motion.span>
+            ) : null;
+          })}
+          {state.badges.length > 3 && (
+            <span className="text-xs text-purple-200">+{state.badges.length - 3} mais</span>
+          )}
+        </div>
+      )}
+    </motion.div>
+  );
+};
+
+// Behavioral Tracking System
+const BehavioralTracker = {
+  data: {
+    startTime: Date.now(),
+    questionTimes: [] as any[],
+    scrollPatterns: [] as any[],
+    clickHesitations: [] as any[],
+    mouseMovements: [] as any[],
+    deviceInfo: {} as any,
+    abandonmentPoints: [] as any[]
+  },
+  
+  init: () => {
+    BehavioralTracker.trackDeviceInfo();
+    BehavioralTracker.trackScrollBehavior();
+    BehavioralTracker.trackMouseMovement();
+    BehavioralTracker.trackClickHesitations();
+  },
+  
+  trackDeviceInfo: () => {
+    BehavioralTracker.data.deviceInfo = {
+      screen: `${window.screen.width}x${window.screen.height}`,
+      viewport: `${window.innerWidth}x${window.innerHeight}`,
+      userAgent: navigator.userAgent,
+      language: navigator.language,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      touchDevice: 'ontouchstart' in window
+    };
+  },
+  
+  trackScrollBehavior: () => {
+    let lastScrollTime = Date.now();
+    let scrollDirection = 'down';
+    
+    window.addEventListener('scroll', () => {
+      const currentTime = Date.now();
+      const timeSinceLastScroll = currentTime - lastScrollTime;
+      const scrollY = window.scrollY;
+      
+      BehavioralTracker.data.scrollPatterns.push({
+        timestamp: currentTime,
+        position: scrollY,
+        direction: scrollDirection,
+        speed: timeSinceLastScroll,
+        percentage: (scrollY / (document.body.scrollHeight - window.innerHeight)) * 100
+      });
+      
+      lastScrollTime = currentTime;
+    });
+  },
+  
+  trackMouseMovement: () => {
+    if (!('ontouchstart' in window)) {
+      let mouseData: any[] = [];
+      
+      document.addEventListener('mousemove', (e) => {
+        mouseData.push({
+          x: e.clientX,
+          y: e.clientY,
+          timestamp: Date.now()
+        });
+        
+        if (mouseData.length > 50) {
+          mouseData = mouseData.slice(-50);
+        }
+      });
+      
+      setInterval(() => {
+        if (mouseData.length > 10) {
+          const analysis = BehavioralTracker.analyzeMousePattern(mouseData);
+          BehavioralTracker.data.mouseMovements.push(analysis);
+        }
+      }, 5000);
+    }
+  },
+  
+  analyzeMousePattern: (data: any[]) => {
+    const avgSpeed = data.reduce((acc, curr, i) => {
+      if (i === 0) return 0;
+      const distance = Math.sqrt(
+        Math.pow(curr.x - data[i-1].x, 2) + 
+        Math.pow(curr.y - data[i-1].y, 2)
+      );
+      const time = curr.timestamp - data[i-1].timestamp;
+      return acc + (distance / time);
+    }, 0) / (data.length - 1);
+    
+    return {
+      timestamp: Date.now(),
+      averageSpeed: avgSpeed,
+      pattern: avgSpeed > 5 ? 'confident' : avgSpeed > 2 ? 'normal' : 'hesitant',
+      coverage: data.length
+    };
+  },
+  
+  trackClickHesitations: () => {
+    document.addEventListener('mousedown', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'BUTTON' || target.closest('button')) {
+        const startTime = Date.now();
+        
+        const handleMouseUp = () => {
+          const duration = Date.now() - startTime;
+          
+          BehavioralTracker.data.clickHesitations.push({
+            element: target.textContent || target.className,
+            duration: duration,
+            timestamp: Date.now(),
+            type: duration > 200 ? 'hesitation' : 'confident'
+          });
+          
+          document.removeEventListener('mouseup', handleMouseUp);
+        };
+        
+        document.addEventListener('mouseup', handleMouseUp);
+      }
+    });
+  },
+  
+  trackQuestionTime: (questionId: string, startTime: number) => {
+    const duration = Date.now() - startTime;
+    
+    BehavioralTracker.data.questionTimes.push({
+      questionId,
+      duration,
+      timestamp: Date.now(),
+      pattern: duration > 15000 ? 'slow' : duration > 5000 ? 'normal' : 'fast'
+    });
+    
+    trackPixelEvent('QuestionTiming', {
+      content_name: `Pergunta ${questionId}`,
+      content_category: 'Question Analytics',
+      value: duration,
+      custom_parameter_1: duration > 15000 ? 'slow_decision' : 'fast_decision'
+    });
+  },
+  
+  getInsights: () => {
+    const data = BehavioralTracker.data;
+    
+    return {
+      sessionDuration: Date.now() - data.startTime,
+      avgQuestionTime: data.questionTimes.reduce((acc, q) => acc + q.duration, 0) / data.questionTimes.length,
+      scrollEngagement: data.scrollPatterns.length > 10 ? 'high' : 'low',
+      mouseConfidence: data.mouseMovements.filter(m => m.pattern === 'confident').length / data.mouseMovements.length,
+      clickConfidence: data.clickHesitations.filter(c => c.type === 'confident').length / data.clickHesitations.length,
+      deviceType: data.deviceInfo.touchDevice ? 'mobile' : 'desktop'
+    };
+  }
+};
+
+// Hook para behavioral tracking
+const useBehavioralTracking = () => {
+  const [questionStartTime, setQuestionStartTime] = useState(Date.now());
+  const [insights, setInsights] = useState<any>(null);
+  
+  useEffect(() => {
+    BehavioralTracker.init();
+    
+    const interval = setInterval(() => {
+      setInsights(BehavioralTracker.getInsights());
+    }, 10000);
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  const trackQuestionStart = (questionId: string) => {
+    setQuestionStartTime(Date.now());
+  };
+  
+  const trackQuestionEnd = (questionId: string) => {
+    BehavioralTracker.trackQuestionTime(questionId, questionStartTime);
+  };
+  
+  return {
+    trackQuestionStart,
+    trackQuestionEnd,
+    insights
+  };
+};
 
 function App() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -31,15 +325,30 @@ function App() {
   const [recentUsers] = useState(Math.floor(Math.random() * 50) + 200);
   const [hasTrackedStart, setHasTrackedStart] = useState(false);
 
+  // Estado da gamificação
+  const [gamificationState, setGamificationState] = useState<GamificationState>({
+    level: 1,
+    experiencePoints: 0,
+    badges: [],
+    streak: 0,
+    milestones: [],
+    powerUps: []
+  });
+
+  // Behavioral tracking
+  const { trackQuestionStart, trackQuestionEnd, insights } = useBehavioralTracking();
+
   // Track quiz start and check pixel status
   useEffect(() => {
     if (!hasTrackedStart) {
-      // Aguarda um pouco para o pixel carregar
       const timer = setTimeout(() => {
         checkPixelStatus();
         trackQuizStart();
-        retryPendingEvents(); // Tenta reenviar eventos pendentes
+        retryPendingEvents();
         setHasTrackedStart(true);
+        
+        // Award first badge
+        addExperience(25, 'quiz_start');
       }, 1000);
 
       return () => clearTimeout(timer);
@@ -49,9 +358,8 @@ function App() {
   // Timer para atualizar usuários online
   useEffect(() => {
     const interval = setInterval(() => {
-      const variation = Math.floor(Math.random() * 10) - 5; // -5 a +5
+      const variation = Math.floor(Math.random() * 10) - 5;
       const newCount = Math.max(180, Math.min(280, recentUsers + variation));
-      // Simula mudança sutil no número
     }, 15000);
     return () => clearInterval(interval);
   }, [recentUsers]);
@@ -67,6 +375,7 @@ function App() {
   // Auto scroll to top when step changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    trackQuestionStart(currentStep.toString());
   }, [currentStep, showAnalysis, showResults]);
 
   const formatTime = (seconds: number) => {
@@ -75,9 +384,58 @@ function App() {
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
+  // Função para adicionar XP e badges
+  const addExperience = (points: number, trigger?: string) => {
+    setGamificationState(prev => {
+      const newXP = prev.experiencePoints + points;
+      const newLevel = GamificationSystem.calculateLevel(newXP);
+      let newBadges = [...prev.badges];
+      
+      // Verifica se ganhou novo badge
+      if (trigger) {
+        newBadges = GamificationSystem.awardBadge(trigger, newBadges);
+      }
+      
+      // Verifica se subiu de nível
+      const leveledUp = newLevel.level > GamificationSystem.calculateLevel(prev.experiencePoints).level;
+      if (leveledUp) {
+        createLevelUpAnimation();
+      }
+      
+      return {
+        ...prev,
+        experiencePoints: newXP,
+        badges: newBadges
+      };
+    });
+  };
+
+  // Animação de level up
+  const createLevelUpAnimation = () => {
+    createConfetti();
+    
+    const notification = document.createElement('div');
+    notification.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-6 rounded-xl shadow-2xl z-50 animate-bounce';
+    notification.innerHTML = `
+      <div class="text-center">
+        <div class="text-3xl mb-2">🎉</div>
+        <div class="font-bold text-xl">LEVEL UP!</div>
+        <div class="text-sm">Você evoluiu de nível!</div>
+      </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      document.body.removeChild(notification);
+    }, 3000);
+  };
+
   // Sistema de gamificação com confetti
   const addPoints = (points: number, achievement?: string) => {
     setUserScore(prev => prev + points);
+    addExperience(points);
+    
     if (achievement && !achievements.includes(achievement)) {
       setAchievements(prev => [...prev, achievement]);
       
@@ -150,6 +508,9 @@ function App() {
   const handleAnswer = (field: string, value: any) => {
     setAnswers(prev => ({ ...prev, [field]: value }));
     
+    // Track question end
+    trackQuestionEnd(currentStep.toString());
+    
     // Track progress
     trackQuizProgress(currentStep + 1, 9);
     
@@ -180,6 +541,15 @@ function App() {
 
     addPoints(pointsMap[field], achievementsMap[field]);
     
+    // Award badges based on answers
+    if (field === 'painLevel' && value >= 7) {
+      addExperience(10, 'pain_warrior');
+    }
+    
+    if (currentStep === 4) { // Middle of quiz
+      addExperience(15, 'truth_seeker');
+    }
+    
     // Trigger análise no meio do quiz (após previousTreatment - pergunta 4)
     if (field === 'previousTreatment' && currentStep === 4) {
       setTimeout(() => {
@@ -188,6 +558,7 @@ function App() {
       }, 300);
     } else if (currentStep === 8) {
       // Última pergunta - vai para loading e depois resultados
+      addExperience(25, 'quiz_complete');
       setTimeout(() => {
         setShowLoading(true);
       }, 300);
@@ -225,8 +596,9 @@ function App() {
     return (
       <LoadingScreen 
         userScore={userScore} 
+        answers={answers}
         onComplete={handleLoadingComplete}
-        duration={5000} // 5 segundos
+        duration={5000}
       />
     );
   }
@@ -249,10 +621,10 @@ function App() {
   const currentStepData = quizSteps[currentStep];
 
   if (!currentStepData) {
-    // Se não há mais perguntas, mostra loading
     return (
       <LoadingScreen 
         userScore={userScore} 
+        answers={answers}
         onComplete={handleLoadingComplete}
         duration={5000}
       />
@@ -273,9 +645,15 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
-      {/* Header harmonioso com o design */}
+      {/* Header com gamificação */}
       <div className="bg-gradient-to-r from-slate-800/90 via-blue-800/90 to-slate-700/90 backdrop-blur-sm border-b border-white/10 shadow-lg">
         <div className="max-w-4xl mx-auto px-4 py-4">
+          {/* Gamification Display */}
+          <GamificationDisplay 
+            state={gamificationState} 
+            onUpdate={setGamificationState}
+          />
+          
           <div className="flex items-center justify-between mb-3">
             <div className="text-sm text-white/80">Pergunta {currentStep + 1} de 9</div>
             <div className="flex items-center gap-3">
@@ -301,11 +679,18 @@ function App() {
           
           {/* Timer de urgência */}
           {timeLeft < 300 && (
-            <div className="bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-400/30 rounded-lg p-3 backdrop-blur-sm">
+            <div className="bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-300/30 rounded-lg p-3 backdrop-blur-sm">
               <div className="flex items-center justify-center gap-2 text-red-200 text-sm">
                 <Clock className="w-4 h-4 text-red-300" />
                 <span className="font-medium">Oferta expira em: <span className="text-red-100 font-bold">{formatTime(timeLeft)}</span></span>
               </div>
+            </div>
+          )}
+
+          {/* Behavioral insights (debug - remover em produção) */}
+          {insights && (
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 mt-3 text-xs text-white/70">
+              <div>Sessão: {Math.round(insights.sessionDuration / 1000)}s | Dispositivo: {insights.deviceType}</div>
             </div>
           )}
         </div>
