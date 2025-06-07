@@ -7,7 +7,6 @@ interface QuizResultsProps {
   answers: any;
   userScore: number;
   timeLeft: number;
-  recentUsers: number;
 }
 
 // Social Proof Específico por Perfil
@@ -378,11 +377,10 @@ const GuaranteeHighlight: React.FC = () => {
   );
 };
 
-export const QuizResults: React.FC<QuizResultsProps> = ({ 
-  answers, 
-  userScore, 
-  timeLeft, 
-  recentUsers 
+export const QuizResults: React.FC<QuizResultsProps> = ({
+  answers,
+  userScore,
+  timeLeft,
 }) => {
   const finalPrice = 9.97;
 
@@ -838,7 +836,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
             </div>
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4" />
-              <span>{recentUsers + Math.floor(Math.random() * 10)} mulheres comprando agora</span>
+              <span>{Math.floor(Math.random() * 10)} mulheres comprando agora</span>
             </div>
           </div>
         </motion.div>

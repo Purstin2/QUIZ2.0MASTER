@@ -84,6 +84,16 @@ const EmotionalPainSlider: React.FC<{
             style={{ left: `${(painLevel / 10) * 100}%` }}
             whileHover={{ scale: 1.2 }}
             whileTap={{ scale: 0.9 }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }} // Limita o arraste apenas horizontalmente
+            onDrag={(event, info) => {
+              const targetElement = event.currentTarget as HTMLElement; // Casting para HTMLElement
+              const parentWidth = targetElement.parentElement?.clientWidth || 1; // Acesso seguro e fallback
+              const newValue = Math.round((info.point.x / parentWidth) * 10); // Calcula o novo valor baseado na posição do arraste
+              onChange(Math.max(0, Math.min(10, newValue))); // Garante que o valor esteja entre 0 e 10
+            }}
+            dragElastic={0}
+            dragMomentum={false}
           >
             <span className="text-sm">{currentLevel.emoji}</span>
           </motion.div>

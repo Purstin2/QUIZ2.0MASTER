@@ -397,6 +397,7 @@ function App() {
     badges: [] as string[],
     level: 1
   });
+  const [recentUsers, setRecentUsers] = useState(Math.floor(Math.random() * 50) + 200); // Contador de usuários simulados
 
   // Behavioral tracking
   const { trackQuestionStart, trackQuestionEnd, insights } = useBehavioralTracking();
@@ -416,6 +417,15 @@ function App() {
     return () => clearInterval(timer);
   }, []);
 
+  // Timer para atualizar usuários online
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const variation = Math.floor(Math.random() * 10) - 5;
+      setRecentUsers(prev => Math.max(180, Math.min(280, prev + variation)));
+    }, 15000);
+    return () => clearInterval(interval);
+  }, [recentUsers]);
+
   // Auto scroll to top when step changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -429,7 +439,7 @@ function App() {
   };
 
   const handleAnswer = (field: string, value: any) => {
-    setAnswers(prev => ({ ...prev, [field]: value }));
+    setAnswers((prev: any) => ({ ...prev, [field]: value }));
     
     // Atualizar pontuação
     const newScore = userScore + 10;
@@ -503,9 +513,9 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
       {/* Header simplificado */}
       <div className="bg-gradient-to-r from-slate-800/90 via-blue-800/90 to-slate-700/90 backdrop-blur-sm border-b border-white/10">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+        <div className="max-w-4xl mx-auto px-4 py-2">
           {/* Nível e XP */}
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-2">
             <div className="text-white">
               <h3 className="font-bold">{GamificationSystem.calculateLevel(gamificationState.experiencePoints).name}</h3>
               <p className="text-sm text-white/80">Nível {GamificationSystem.calculateLevel(gamificationState.experiencePoints).level}</p>
@@ -528,12 +538,6 @@ function App() {
           {/* Status atual */}
           <div className="flex items-center justify-between text-sm text-white/80">
             <span>Pergunta {currentStep + 1} de 9</span>
-            <div className="flex items-center gap-2">
-              <span className="text-yellow-300">🎯 {userScore} pontos</span>
-              <span className="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full text-xs border border-emerald-400/30">
-                Plano personalizado
-              </span>
-            </div>
           </div>
 
           {/* Timer de urgência */}
@@ -586,7 +590,7 @@ function App() {
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-4">
             <div className="flex items-center justify-center gap-3 mb-4">
               <Users className="w-5 h-5" />
-              <span className="font-medium">4.9/5 ⭐ (8.247 avaliações)</span>
+              <span className="font-medium">{recentUsers + Math.floor(Math.random() * 10)} pessoas fazendo a avaliação agora</span>
             </div>
             
             {/* Fotos de perfil em vez de estrelas */}
@@ -612,7 +616,7 @@ function App() {
         </motion.div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .slider::-webkit-slider-thumb {
           appearance: none;
           height: 28px;
