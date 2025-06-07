@@ -90,7 +90,7 @@ export const QuizAnalysis: React.FC<QuizAnalysisProps> = ({ answers, analysisSte
 
           <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-4 rounded-lg">
             <p className="text-sm font-medium">
-              🎯 {userScore} pontos conquistados • Oferta especial de R$19,90 liberada!
+              🎯 {userScore} pontos conquistados • Parabéns !
             </p>
           </div>
         </motion.div>
