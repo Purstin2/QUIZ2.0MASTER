@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ChevronRight, Star, Shield, Users, Clock, CheckCircle, Award, TrendingDown, Heart, Brain, HelpCircle, MessageCircle, Phone } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronRight, Star, Shield, Users, Clock, CheckCircle, Award, TrendingDown, Heart, Brain, HelpCircle, MessageCircle, Phone, AlertTriangle, X } from 'lucide-react';
 import { trackOfferView, trackPurchaseIntent } from '../lib/pixel';
 
 interface QuizResultsProps {
@@ -9,6 +9,161 @@ interface QuizResultsProps {
   timeLeft: number;
   recentUsers: number;
 }
+
+// Componente de Ancoragem Progressiva de Preços
+const PricingAnchorage: React.FC<{ userScore: number }> = ({ userScore }) => {
+  const [currentPrice, setCurrentPrice] = useState(197.00);
+  const [currentText, setCurrentText] = useState("Valor de mercado para casos similares");
+  const [showFinalPrice, setShowFinalPrice] = useState(false);
+  
+  useEffect(() => {
+    // Ancoragem progressiva - mostrar preços em sequência
+    const sequence = [
+      { price: 197.00, delay: 0, text: "Valor de mercado para casos similares" },
+      { price: 97.00, delay: 2000, text: "Preço promocional de lançamento" },
+      { price: 47.00, delay: 4000, text: "Desconto para primeiras 100 vagas" },
+      { price: 9.97, delay: 6000, text: "SEU PREÇO FINAL com pontuação máxima", final: true }
+    ];
+    
+    sequence.forEach(({ price, delay, text, final }) => {
+      setTimeout(() => {
+        setCurrentPrice(price);
+        setCurrentText(text);
+        if (final) setShowFinalPrice(true);
+      }, delay);
+    });
+  }, []);
+  
+  return (
+    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8">
+      <div className="text-center">
+        <div className="text-sm text-white/80 mb-2">{currentText}</div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentPrice}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="space-y-3"
+          >
+            <div className={`text-4xl font-bold ${showFinalPrice ? 'text-yellow-300' : 'text-white/70 line-through'}`}>
+              R$ {currentPrice.toFixed(2).replace('.', ',')}
+            </div>
+            
+            {showFinalPrice && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="bg-gradient-to-r from-green-400 to-emerald-400 text-green-900 p-4 rounded-xl"
+              >
+                <div className="text-lg font-bold">🎯 LIBERADO! SEUS {userScore} PONTOS</div>
+                <div className="text-xl font-black">GARANTIRAM O MENOR PREÇO POSSÍVEL!</div>
+                <div className="text-sm mt-1">Disponível apenas para primeiros 100 casos críticos!</div>
+              </motion.div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+};
+
+// Componente de Loss Aversion
+const LossAversionSection: React.FC<{ answers: any }> = ({ answers }) => {
+  const getFutureConsequences = () => {
+    const age = parseInt(answers.age?.split('-')[0] || '45');
+    const painLevel = answers.painLevel;
+    const duration = answers.duration;
+    
+    if (painLevel >= 7 && duration === 'longtime') {
+      return {
+        title: "⚠️ ATENÇÃO: Situação Crítica Identificada",
+        consequences: [
+          `Aos ${age + 5} anos: Limitações severas de movimento`,
+          `Aos ${age + 10} anos: Dependência de medicamentos forte`,
+          `Aos ${age + 15} anos: Cirurgias podem ser inevitáveis`,
+        ],
+        urgency: "Sua janela de reversão natural está se fechando"
+      };
+    }
+    
+    return {
+      title: "🚨 O Que Acontece Se Não Agir Agora:",
+      consequences: [
+        "Dores aumentam 40% a cada ano após os 45",
+        "Limitações começam a afetar vida social e familiar", 
+        "Custos médicos podem chegar a R$15.000/ano"
+      ],
+      urgency: "A prevenção hoje evita sofrimento futuro"
+    };
+  };
+  
+  const scenario = getFutureConsequences();
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-gradient-to-r from-red-50 to-orange-50 border-l-4 border-red-500 p-6 rounded-xl mb-8"
+    >
+      <h3 className="font-bold text-red-800 mb-4 flex items-center text-lg">
+        <AlertTriangle className="w-6 h-6 mr-2" />
+        {scenario.title}
+      </h3>
+      
+      <div className="space-y-3 mb-4">
+        {scenario.consequences.map((consequence, i) => (
+          <div key={i} className="flex items-start gap-3">
+            <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+            <span className="text-red-700 font-medium">{consequence}</span>
+          </div>
+        ))}
+      </div>
+      
+      <div className="bg-white p-4 rounded-lg border border-red-200">
+        <p className="text-red-800 font-bold text-center">
+          {scenario.urgency}
+        </p>
+        <p className="text-red-600 text-sm text-center mt-2">
+          Estudos mostram: quanto mais tempo espera, mais difícil fica a recuperação
+        </p>
+      </div>
+    </motion.div>
+  );
+};
+
+// Componente de Garantia Destacada
+const GuaranteeHighlight: React.FC = () => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: 0.5 }}
+      className="bg-gradient-to-r from-green-500 to-emerald-500 text-white p-6 rounded-xl mt-6 mb-6"
+    >
+      <div className="text-center">
+        <Shield className="w-12 h-12 mx-auto mb-3 text-green-100" />
+        <h3 className="text-xl font-bold mb-3">
+          GARANTIA BLINDADA DE 7 DIAS
+        </h3>
+        <p className="text-green-100 mb-4 leading-relaxed">
+          <strong>Não sentiu melhora nas dores?</strong><br/>
+          Devolvemos 100% do seu dinheiro na hora.<br/>
+          Sem perguntas. Sem enrolação. Sem burocracia.
+        </p>
+        
+        <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4">
+          <p className="font-bold text-lg">
+            💚 RISCO ZERO PARA VOCÊ
+          </p>
+          <p className="text-sm text-green-100 mt-1">
+            O risco é todo nosso. Se não funcionar, você não paga nada.
+          </p>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 export const QuizResults: React.FC<QuizResultsProps> = ({ 
   answers, 
@@ -65,6 +220,37 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
       default:
         return 'corpo';
     }
+  };
+
+  // CTAs dinâmicos baseados no perfil
+  const getDynamicCTA = (answers: any) => {
+    const { age, mainProblem, painLevel } = answers;
+    
+    if (mainProblem === 'back' && age?.includes('45-54')) {
+      return {
+        primary: "QUERO VOLTAR A BRINCAR COM MEUS FILHOS SEM DOR",
+        secondary: "Eliminar dores nas costas definitivamente"
+      };
+    }
+    
+    if (mainProblem === 'neck' && painLevel >= 6) {
+      return {
+        primary: "QUERO DORMIR SEM DOR NO PESCOÇO",
+        secondary: "Acabar com a tensão cervical para sempre"
+      };
+    }
+    
+    if (age?.includes('55-64') || age?.includes('65+')) {
+      return {
+        primary: "QUERO MINHA INDEPENDÊNCIA DE VOLTA",
+        secondary: "Viver sem limitações na melhor idade"
+      };
+    }
+    
+    return {
+      primary: "QUERO UMA VIDA SEM DORES LIMITANDO MEUS SONHOS",
+      secondary: "Transformar minha qualidade de vida agora"
+    };
   };
 
   // Sistema de análise profunda personalizada
@@ -145,7 +331,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
 
   const archetype = getArchetype();
   const personalizedInsights = getPersonalizedAnalysis();
-  const originalPrice = 197;
+  const ctaText = getDynamicCTA(answers);
 
   // Reviews mais autênticos e conectados com o público
   const reviews = [
@@ -219,6 +405,24 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face&auto=format",
       text: "Bursite no ombro me impedia de pentear o cabelo. Fisioterapia tradicional não resolveu. Com esse método, em 3 semanas já levantava o braço sem dor. Hoje faço pilates e me sinto renovada aos 55!",
       problem: "Bursite no ombro",
+      timeToResult: "3 semanas"
+    },
+    {
+      name: "Claudia Martins",
+      age: "49 anos",
+      location: "Curitiba",
+      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&h=80&fit=crop&crop=face&auto=format",
+      text: "Ciática me deixava acordada de madrugada chorando de dor. Não conseguia nem dirigir. O método me devolveu minha vida! Em 4 semanas voltei a trabalhar normalmente e hoje dirijo sem medo.",
+      problem: "Ciática",
+      timeToResult: "4 semanas"
+    },
+    {
+      name: "Fernanda Souza",
+      age: "41 anos",
+      location: "Goiânia",
+      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&h=80&fit=crop&crop=face&auto=format",
+      text: "Síndrome do túnel do carpo me impedia de trabalhar no computador. Estava pensando em mudar de profissão. Com o método, em 3 semanas as dores sumiram e hoje trabalho sem limitações!",
+      problem: "Túnel do carpo",
       timeToResult: "3 semanas"
     }
   ];
@@ -352,45 +556,42 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-red-50 to-orange-50 border-l-4 border-red-400 p-6 mb-6">
-            <h3 className="font-bold text-red-800 mb-3 flex items-center">
-              <Heart className="w-5 h-5 mr-2" />
-              Situação Crítica Identificada
-            </h3>
-            <p className="text-red-700 text-sm leading-relaxed">
-              Nossos especialistas identificaram que seu padrão de dor pode evoluir para <strong>limitações permanentes</strong> se não tratado adequadamente. 
-              Estudos mostram que {answers.painLevel >= 6 ? 'dores de alta intensidade' : 'dores persistentes'} como a sua tendem a 
-              piorar 40% mais rápido após os {answers.age === '35-44' ? '40' : answers.age === '45-54' ? '50' : '60'} anos. 
-              <strong>A janela de reversão total ainda está aberta, mas o tempo é crucial.</strong>
-            </p>
-          </div>
-
           <div className="space-y-4">
             <div className="flex items-start gap-4">
               <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
               <div>
-                <div className="font-semibold text-gray-800">Método Cientificamente Personalizado</div>
-                <div className="text-sm text-gray-600">Protocolo específico para {archetype.title.toLowerCase()} com dores {getPainText(answers.painLevel).toLowerCase()}</div>
+                <div className="font-semibold text-gray-800">🎯 Alívio Imediato das Dores</div>
+                <div className="text-sm text-gray-600">Primeiros resultados em 48-72h com técnicas de liberação miofascial</div>
               </div>
             </div>
             <div className="flex items-start gap-4">
               <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
               <div>
-                <div className="font-semibold text-gray-800">Abordagem Direcionada Para Sua Condição</div>
-                <div className="text-sm text-gray-600">Foco especializado em {answers.mainProblem === 'back' ? 'reequilíbrio postural e fortalecimento do core' : answers.mainProblem === 'neck' ? 'descompressão cervical e relaxamento muscular' : answers.mainProblem === 'joints' ? 'mobilidade articular e flexibilidade' : 'movimento funcional integrado'}</div>
+                <div className="font-semibold text-gray-800">💪 Fortalecimento Progressivo</div>
+                <div className="text-sm text-gray-600">Músculos mais fortes = menos dor e maior resistência no dia a dia</div>
               </div>
             </div>
             <div className="flex items-start gap-4">
               <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
               <div>
-                <div className="font-semibold text-gray-800">Resultados Garantidos em 21 Dias</div>
-                <div className="text-sm text-gray-600">Baseado em 15.000+ casos de sucesso com perfil idêntico ao seu</div>
+                <div className="font-semibold text-gray-800">🧘‍♀️ Relaxamento Profundo</div>
+                <div className="text-sm text-gray-600">Técnicas de respiração que reduzem stress e tensão muscular</div>
+              </div>
+            </div>
+            <div className="flex items-start gap-4">
+              <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+              <div>
+                <div className="font-semibold text-gray-800">🏠 Praticidade Total</div>
+                <div className="text-sm text-gray-600">15-20 min/dia em casa, sem equipamentos caros ou academia</div>
               </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Oferta com justificativa melhorada */}
+        {/* Loss Aversion Section */}
+        <LossAversionSection answers={answers} />
+
+        {/* Oferta com ancoragem de preços */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -405,53 +606,8 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
             <p className="text-white/90 text-lg">O sistema completo para eliminar suas dores em 21 dias</p>
           </div>
 
-          {/* Benefícios reais e relevantes */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-6">
-            <h3 className="text-xl font-bold mb-4 text-center">Por que você ganhou esse preço especial?</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div className="bg-white/10 rounded-lg p-3">
-                <div className="font-bold mb-1">🎯 Alívio Imediato das Dores</div>
-                <div>Primeiros resultados em 48-72h com técnicas de liberação miofascial</div>
-              </div>
-              <div className="bg-white/10 rounded-lg p-3">
-                <div className="font-bold mb-1">💪 Fortalecimento Progressivo</div>
-                <div>Músculos mais fortes = menos dor e maior resistência no dia a dia</div>
-              </div>
-              <div className="bg-white/10 rounded-lg p-3">
-                <div className="font-bold mb-1">🧘‍♀️ Relaxamento Profundo</div>
-                <div>Técnicas de respiração que reduzem stress e tensão muscular</div>
-              </div>
-              <div className="bg-white/10 rounded-lg p-3">
-                <div className="font-bold mb-1">🏠 Praticidade Total</div>
-                <div>15-20 min/dia em casa, sem equipamentos caros ou academia</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8">
-            <div className="text-center">
-              <div className="text-sm text-white/80 mb-2">Investimento normal para casos similares:</div>
-              <div className="text-3xl line-through opacity-70 mb-4">R$ {originalPrice},00</div>
-              
-              {/* Desconto dos pontos bem visível */}
-              <div className="bg-gradient-to-r from-green-400 to-emerald-400 text-green-900 p-4 rounded-xl mb-4">
-                <div className="text-lg font-bold">🎯 PARABÉNS! SEUS {userScore} PONTOS</div>
-                <div className="text-2xl font-black">LIBERARAM O PREÇO ESPECIAL DE LANÇAMENTO</div>
-                <div className="text-sm mt-1">Disponível apenas para primeiros 100 casos críticos!</div>
-              </div>
-              
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-                className="text-center"
-              >
-                <div className="text-lg text-white/90">Seu investimento hoje:</div>
-                <div className="text-6xl font-bold text-yellow-300 mb-2">R$ {finalPrice.toFixed(2).replace('.', ',')}</div>
-                <div className="text-sm text-white/80">Pagamento único • Acesso vitalício</div>
-              </motion.div>
-            </div>
-          </div>
+          {/* Ancoragem de Preços */}
+          <PricingAnchorage userScore={userScore} />
 
           <div className="bg-red-500/20 backdrop-blur-sm rounded-lg p-4 mb-6 border border-red-300/30">
             <div className="flex justify-center items-center gap-3 text-sm">
@@ -464,11 +620,15 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={handlePurchaseClick}
-            className="w-full bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-gray-900 font-bold py-6 px-8 rounded-xl text-xl transition-all shadow-lg flex items-center justify-center gap-3"
+            className="w-full bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-gray-900 font-bold py-6 px-8 rounded-xl text-lg transition-all shadow-lg flex items-center justify-center gap-3"
           >
-            QUERO MEU MÉTODO PERSONALIZADO AGORA
+            {ctaText.primary}
             <ChevronRight className="w-6 h-6" />
           </motion.button>
+
+          <div className="text-center mt-3 text-white/80 text-sm">
+            {ctaText.secondary}
+          </div>
 
           <div className="flex justify-center items-center gap-6 mt-6 text-sm text-white/80">
             <div className="flex items-center gap-2">
@@ -481,6 +641,9 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
             </div>
           </div>
         </motion.div>
+
+        {/* Garantia Destacada */}
+        <GuaranteeHighlight />
 
         {/* Reviews expandidos e mais autênticos */}
         <motion.div
