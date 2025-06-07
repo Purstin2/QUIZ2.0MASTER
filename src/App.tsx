@@ -454,21 +454,32 @@ function App() {
     // Próxima pergunta
     if (currentStep < quizSteps.length - 1) {
       setCurrentStep(prev => prev + 1);
+      console.log('Moving to next step:', currentStep + 1);
     } else {
+      console.log('Last step reached, showing loading screen...');
       setShowLoading(true);
       setTimeout(() => {
+        console.log('Timeout finished, showing results.');
         setShowLoading(false);
         setShowResults(true);
       }, 5000);
     }
   };
 
+  useEffect(() => {
+    console.log('App State Changed: currentStep =', currentStep, 'showLoading =', showLoading, 'showResults =', showResults);
+  }, [currentStep, showLoading, showResults]);
+
   if (showLoading) {
     return (
       <LoadingScreen 
         userScore={userScore} 
         answers={answers}
-        onComplete={() => {}}
+        onComplete={() => {
+          console.log('LoadingScreen onComplete called.');
+          setShowLoading(false);
+          setShowResults(true);
+        }}
         duration={5000}
       />
     );
@@ -491,7 +502,10 @@ function App() {
       <LoadingScreen 
         userScore={userScore} 
         answers={answers}
-        onComplete={() => {}}
+        onComplete={() => {
+          setShowLoading(false);
+          setShowResults(true);
+        }}
         duration={5000}
       />
     );

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronRight, Mail, Loader2, CheckCircle, Shield, Users, Lock } from 'lucide-react';
-import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
 import { saveQuizResponse, checkEmailExists } from '../lib/supabase';
 import { trackEmailCapture, trackPixelEvent } from '../lib/pixel';
 
@@ -26,8 +26,8 @@ interface QuizStepsProps {
 }
 
 // Slider de Dor Emocional Avançado
-const EmotionalPainSlider: React.FC<{ 
-  painLevel: number; 
+const EmotionalPainSlider: React.FC<{
+  painLevel: number;
   onChange: (value: number) => void;
   onAnswer: (field: string, value: any) => void;
 }> = ({ painLevel, onChange, onAnswer }) => {
@@ -49,31 +49,32 @@ const EmotionalPainSlider: React.FC<{
   const trackRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
 
-  const transformedPainLevel = useTransform(x, (latestX) => {
+  // Sincroniza a posição inicial da bolinha com o painLevel quando o componente carrega ou painLevel muda
+  useEffect(() => {
     if (trackRef.current) {
       const trackWidth = trackRef.current.clientWidth;
-      const percentage = Math.max(0, Math.min(1, latestX / trackWidth));
-      return Math.round(percentage * 10);
+      const thumbWidth = 32; // w-8 h-8 = 32px
+      x.set((painLevel / 10) * trackWidth - (thumbWidth / 2)); 
     }
-    return painLevel;
-  });
+  }, [painLevel, x, trackRef.current?.clientWidth]);
 
+  // Atualiza o painLevel enquanto a bolinha é arrastada
   useEffect(() => {
-    const unsubscribe = transformedPainLevel.onChange((latestValue) => {
-      if (latestValue !== painLevel) {
-        onChange(latestValue);
+    const unsubscribe = x.on("change", (latestX) => {
+      if (trackRef.current) {
+        const trackWidth = trackRef.current.clientWidth;
+        const thumbWidth = 32; // w-8 h-8 = 32px
+        const newXAdjusted = latestX + (thumbWidth / 2); // Ajusta latestX para o centro do polegar
+        const newPercentage = Math.max(0, Math.min(1, newXAdjusted / trackWidth));
+        const newValue = Math.round(newPercentage * 10);
+        if (newValue !== painLevel) {
+          onChange(newValue);
+        }
       }
     });
     return () => unsubscribe();
-  }, [transformedPainLevel, painLevel, onChange]);
+  }, [x, painLevel, onChange, trackRef.current?.clientWidth]);
 
-  useEffect(() => {
-    if (trackRef.current) {
-      const trackWidth = trackRef.current.clientWidth;
-      x.set((painLevel / 10) * trackWidth);
-    }
-  }, [painLevel, x, trackRef.current?.clientWidth]);
-  
   return (
     <div className="space-y-8">
       {/* Exibição visual da dor atual */}
@@ -96,26 +97,16 @@ const EmotionalPainSlider: React.FC<{
       {/* Slider interativo com zonas de cor */}
       <div className="relative px-4">
         <div ref={trackRef} className="relative h-8 bg-gradient-to-r from-green-200 via-yellow-300 via-orange-400 to-red-600 rounded-full shadow-inner">
-          <input
-            type="range"
-            min="0"
-            max="10"
-            value={painLevel}
-            onChange={(e) => onChange(parseInt(e.target.value))}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-          />
-          
-          {/* Indicador personalizado */}
+          {/* A bolinha com o emoji AGORA é o único elemento arrastável e visível */}
           <motion.div
-            className="absolute top-1/2 w-8 h-8 bg-white rounded-full shadow-lg border-4 border-purple-500 transform -translate-y-1/2 -translate-x-1/2 flex items-center justify-center cursor-pointer"
-            style={{ left: `${(painLevel / 10) * 100}%` }}
+            className="absolute top-1/2 w-8 h-8 bg-white rounded-full shadow-lg border-4 border-purple-500 transform -translate-y-1/2 flex items-center justify-center cursor-grab" // Removendo -translate-x-1/2
+            style={{ x }} // Controla a posição X diretamente com o motion value
             whileHover={{ scale: 1.2 }}
             whileTap={{ scale: 0.9 }}
             drag="x"
-            dragConstraints={trackRef}
+            dragConstraints={trackRef} // Restrições de arraste na trilha
             dragElastic={0}
             dragMomentum={false}
-            onPointerDown={() => x.set((painLevel / 10) * (trackRef.current?.clientWidth || 0))}
           >
             <span className="text-sm">{currentLevel.emoji}</span>
           </motion.div>
@@ -151,6 +142,30 @@ const EmotionalPainSlider: React.FC<{
       >
         Confirmar Nível de Dor: {currentLevel.label}
       </button>
+
+      <style>{`
+        .slider-thumb-hidden::-webkit-slider-thumb {
+          appearance: none;
+          width: 0;
+          height: 0;
+          background: transparent;
+          border: 0;
+        }
+        .slider-thumb-hidden::-moz-range-thumb {
+          appearance: none;
+          width: 0;
+          height: 0;
+          background: transparent;
+          border: 0;
+        }
+        .slider-thumb-hidden::-ms-thumb {
+          appearance: none;
+          width: 0;
+          height: 0;
+          background: transparent;
+          border: 0;
+        }
+      `}</style>
     </div>
   );
 };
