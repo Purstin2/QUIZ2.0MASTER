@@ -204,127 +204,6 @@ const GamifiedProgress: React.FC<{ currentStep: number; totalSteps: number; user
   );
 };
 
-// Sistema de Competição Social
-const SocialCompetition: React.FC<{ userScore: number }> = ({ userScore }) => {
-  const [leaderboard, setLeaderboard] = useState([
-    { name: "Ana L.", score: 285, position: 1 },
-    { name: "Maria S.", score: 270, position: 2 },
-    { name: "Carmen R.", score: 255, position: 3 },
-    { name: "Você", score: userScore, position: 0 }
-  ]);
-  
-  const [rewards, setRewards] = useState([
-    { 
-      threshold: 100, 
-      reward: "Desconto R$ 2,00", 
-      unlocked: userScore >= 100,
-      icon: "💰"
-    },
-    { 
-      threshold: 200, 
-      reward: "Bônus: Guia Express", 
-      unlocked: userScore >= 200,
-      icon: "📚"
-    },
-    { 
-      threshold: 250, 
-      reward: "Acesso ao Grupo VIP", 
-      unlocked: userScore >= 250,
-      icon: "👑"
-    }
-  ]);
-  
-  // Calcular posição do usuário
-  const userPosition = leaderboard
-    .sort((a, b) => b.score - a.score)
-    .findIndex(user => user.name === "Você") + 1;
-  
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-6"
-    >
-      <h3 className="text-white font-bold text-lg mb-4 text-center">
-        🏆 Ranking das Mais Determinadas
-      </h3>
-      
-      {/* Mini leaderboard */}
-      <div className="space-y-2 mb-6">
-        {leaderboard
-          .sort((a, b) => b.score - a.score)
-          .slice(0, 4)
-          .map((user, index) => (
-            <div
-              key={index}
-              className={`flex items-center justify-between p-3 rounded-lg ${
-                user.name === "Você" 
-                  ? 'bg-yellow-400/20 border border-yellow-400/30' 
-                  : 'bg-white/5'
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold ${
-                  index === 0 ? 'bg-yellow-400 text-gray-800' :
-                  index === 1 ? 'bg-gray-300 text-gray-800' :
-                  index === 2 ? 'bg-orange-400 text-gray-800' :
-                  'bg-purple-400 text-white'
-                }`}>
-                  {index + 1}
-                </div>
-                <span className={`font-medium ${
-                  user.name === "Você" ? 'text-yellow-300' : 'text-white'
-                }`}>
-                  {user.name}
-                </span>
-              </div>
-              <span className="text-white/80 font-bold">{user.score} pts</span>
-            </div>
-          ))}
-      </div>
-      
-      {/* Sistema de recompensas */}
-      <div className="border-t border-white/20 pt-4">
-        <h4 className="text-white/90 font-medium mb-3">🎁 Suas Recompensas:</h4>
-        <div className="space-y-2">
-          {rewards.map((reward, index) => (
-            <div
-              key={index}
-              className={`flex items-center justify-between p-2 rounded-lg text-sm ${
-                reward.unlocked 
-                  ? 'bg-green-500/20 border border-green-400/30' 
-                  : 'bg-gray-500/20'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <span className="text-lg">{reward.icon}</span>
-                <span className={reward.unlocked ? 'text-green-300' : 'text-gray-400'}>
-                  {reward.reward}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-white/60">{reward.threshold} pts</span>
-                {reward.unlocked ? (
-                  <CheckCircle className="w-4 h-4 text-green-400" />
-                ) : (
-                  <Lock className="w-4 h-4 text-gray-400" />
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      
-      {/* Próximo objetivo */}
-      <div className="mt-4 text-center">
-        <p className="text-white/80 text-sm">
-          🎯 Próximo objetivo: {rewards.find(r => !r.unlocked)?.threshold || 300} pontos
-        </p>
-      </div>
-    </motion.div>
-  );
-};
-
 // Behavioral Tracking System
 const BehavioralTracker = {
   data: {
@@ -849,49 +728,48 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
-      {/* Header com gamificação */}
-      <div className="bg-gradient-to-r from-slate-800/90 via-blue-800/90 to-slate-700/90 backdrop-blur-sm border-b border-white/10 shadow-lg">
+      {/* Header simplificado */}
+      <div className="bg-gradient-to-r from-slate-800/90 via-blue-800/90 to-slate-700/90 backdrop-blur-sm border-b border-white/10">
         <div className="max-w-4xl mx-auto px-4 py-4">
-          {/* Gamification Display */}
-          <GamificationDisplay 
-            state={gamificationState} 
-            onUpdate={setGamificationState}
-          />
-          
-          {/* Progresso Gamificado */}
-          <GamifiedProgress 
-            currentStep={currentStep + 1}
-            totalSteps={9}
-            userScore={userScore}
-          />
-          
+          {/* Nível e XP */}
           <div className="flex items-center justify-between mb-3">
-            <div className="text-sm text-white/80">Pergunta {currentStep + 1} de 9</div>
-            <div className="flex items-center gap-3">
-              <div className="text-sm text-yellow-300 font-bold flex items-center gap-1">
-                <span className="text-yellow-400">🎯</span>
-                {userScore} pontos
-              </div>
-              <div className="text-xs bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full border border-emerald-400/30">
-                Plano personalizado
-              </div>
+            <div className="text-white">
+              <h3 className="font-bold">{GamificationSystem.calculateLevel(gamificationState.experiencePoints).name}</h3>
+              <p className="text-sm text-white/80">Nível {GamificationSystem.calculateLevel(gamificationState.experiencePoints).level}</p>
+            </div>
+            <div className="text-right">
+              <div className="text-xl font-bold text-yellow-300">{userScore} XP</div>
             </div>
           </div>
           
+          {/* Barra de progresso única */}
+          <div className="w-full bg-white/10 rounded-full h-2 mb-3">
+            <motion.div
+              className="bg-yellow-400 h-2 rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${((currentStep + 1) / 9) * 100}%` }}
+              transition={{ duration: 0.8 }}
+            />
+          </div>
+
+          {/* Status atual */}
+          <div className="flex items-center justify-between text-sm text-white/80">
+            <span>Pergunta {currentStep + 1} de 9</span>
+            <div className="flex items-center gap-2">
+              <span className="text-yellow-300">🎯 {userScore} pontos</span>
+              <span className="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full text-xs border border-emerald-400/30">
+                Plano personalizado
+              </span>
+            </div>
+          </div>
+
           {/* Timer de urgência */}
           {timeLeft < 300 && (
-            <div className="bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-300/30 rounded-lg p-3 backdrop-blur-sm">
+            <div className="mt-3 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-300/30 rounded-lg p-2">
               <div className="flex items-center justify-center gap-2 text-red-200 text-sm">
                 <Clock className="w-4 h-4 text-red-300" />
-                <span className="font-medium">Oferta expira em: <span className="text-red-100 font-bold">{formatTime(timeLeft)}</span></span>
+                <span>Oferta expira em: <span className="font-bold">{formatTime(timeLeft)}</span></span>
               </div>
-            </div>
-          )}
-
-          {/* Behavioral insights (debug - remover em produção) */}
-          {insights && (
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 mt-3 text-xs text-white/70">
-              <div>Sessão: {Math.round(insights.sessionDuration / 1000)}s | Dispositivo: {insights.deviceType}</div>
             </div>
           )}
         </div>
@@ -899,9 +777,6 @@ function App() {
 
       {/* Conteúdo principal */}
       <div className="max-w-3xl mx-auto px-4 py-12">
-        {/* Sistema de Competição Social */}
-        <SocialCompetition userScore={userScore} />
-        
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}
