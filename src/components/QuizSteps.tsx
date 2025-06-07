@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ChevronRight, Mail, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { saveQuizResponse, checkEmailExists } from '../lib/supabase';
+import { trackEmailCapture } from '../lib/pixel';
 
 interface QuizStep {
   id: string;
@@ -85,6 +86,9 @@ export const QuizSteps: React.FC<QuizStepsProps> = ({
 
       // Save to Supabase
       await saveQuizResponse(quizData);
+      
+      // Track email capture for Facebook Pixel
+      trackEmailCapture(answers.email);
       
       // Continue with the quiz flow
       onAnswer('email', answers.email);

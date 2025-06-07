@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight, Star, Shield, Users, Clock, CheckCircle, Stethoscope, Award, TrendingDown, Heart, Brain } from 'lucide-react';
+import { trackOfferView, trackPurchaseIntent } from '../lib/pixel';
 
 interface QuizResultsProps {
   answers: any;
@@ -15,6 +16,18 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
   timeLeft, 
   recentUsers 
 }) => {
+  const finalPrice = 19.90;
+
+  // Track offer view when component mounts
+  useEffect(() => {
+    trackOfferView(finalPrice);
+  }, [finalPrice]);
+
+  const handlePurchaseClick = () => {
+    trackPurchaseIntent(finalPrice);
+    // Here you would redirect to payment or open payment modal
+  };
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -132,7 +145,6 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
   const archetype = getArchetype();
   const personalizedInsights = getPersonalizedAnalysis();
   const originalPrice = 197;
-  const finalPrice = 19.90;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
@@ -158,7 +170,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
               <span>•</span>
               <span className="flex items-center gap-2 bg-green-500/30 px-3 py-1 rounded-full">
                 <TrendingDown className="w-4 h-4 text-green-300" />
-                <strong>Oferta especial liberada: R$19,90</strong>
+                <strong>Oferta especial liberada: R${finalPrice.toFixed(2).replace('.', ',')}</strong>
               </span>
             </div>
           </div>
@@ -346,6 +358,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
+            onClick={handlePurchaseClick}
             className="w-full bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-gray-900 font-bold py-6 px-8 rounded-xl text-xl transition-all shadow-lg flex items-center justify-center gap-3"
           >
             QUERO MEU MÉTODO PERSONALIZADO AGORA

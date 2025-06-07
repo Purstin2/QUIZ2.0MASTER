@@ -6,6 +6,7 @@ import { QuizAnalysis } from './components/QuizAnalysis';
 import { QuizResults } from './components/QuizResults';
 import { LoadingScreen } from './components/LoadingScreen';
 import { quizSteps } from './components/QuizData';
+import { trackQuizStart, trackQuizProgress, trackQuizComplete } from './lib/pixel';
 
 function App() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -28,6 +29,15 @@ function App() {
   const [analysisStep, setAnalysisStep] = useState(0);
   const [timeLeft, setTimeLeft] = useState(600);
   const [recentUsers] = useState(Math.floor(Math.random() * 50) + 200);
+  const [hasTrackedStart, setHasTrackedStart] = useState(false);
+
+  // Track quiz start on component mount
+  useEffect(() => {
+    if (!hasTrackedStart) {
+      trackQuizStart();
+      setHasTrackedStart(true);
+    }
+  }, [hasTrackedStart]);
 
   // Timer para atualizar usuários online
   useEffect(() => {
@@ -133,6 +143,9 @@ function App() {
   const handleAnswer = (field: string, value: any) => {
     setAnswers(prev => ({ ...prev, [field]: value }));
     
+    // Track progress
+    trackQuizProgress(currentStep + 1, 9);
+    
     // Sistema de pontos progressivo
     const pointsMap: Record<string, number> = {
       age: 15,
@@ -197,6 +210,8 @@ function App() {
   const handleLoadingComplete = () => {
     setShowLoading(false);
     setShowResults(true);
+    // Track quiz completion
+    trackQuizComplete(userScore);
   };
 
   if (showLoading) {
