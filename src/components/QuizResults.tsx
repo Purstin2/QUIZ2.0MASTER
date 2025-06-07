@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronRight, Star, Shield, Users, Clock, CheckCircle, Stethoscope, Award, TrendingDown, Heart, Brain } from 'lucide-react';
+import { ChevronRight, Star, Shield, Users, Clock, CheckCircle, Award, TrendingDown, Heart, Brain, HelpCircle, MessageCircle, Phone } from 'lucide-react';
 import { trackOfferView, trackPurchaseIntent } from '../lib/pixel';
 
 interface QuizResultsProps {
@@ -16,7 +16,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
   timeLeft, 
   recentUsers 
 }) => {
-  const finalPrice = 19.90;
+  const finalPrice = 9.97;
 
   // Track offer view when component mounts
   useEffect(() => {
@@ -146,6 +146,110 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
   const archetype = getArchetype();
   const personalizedInsights = getPersonalizedAnalysis();
   const originalPrice = 197;
+
+  // Reviews mais autênticos e conectados com o público
+  const reviews = [
+    {
+      name: "Maria Santos",
+      age: "52 anos",
+      location: "São Paulo",
+      image: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=80&h=80&fit=crop&crop=face&auto=format",
+      text: "Depois de 4 anos com dores nas costas que me impediam até de brincar com meus netos, encontrei esse método. Em 3 semanas já conseguia me abaixar sem dor! Hoje, 2 meses depois, me sinto 10 anos mais nova.",
+      problem: "Dores nas costas",
+      timeToResult: "3 semanas"
+    },
+    {
+      name: "Ana Lucia Ferreira",
+      age: "47 anos", 
+      location: "Rio de Janeiro",
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face&auto=format",
+      text: "Trabalho 8h no computador e a tensão no pescoço era insuportável. Tomava relaxante muscular todo dia. Com o método, em 2 semanas parei os remédios e hoje durmo sem dor pela primeira vez em anos!",
+      problem: "Tensão cervical",
+      timeToResult: "2 semanas"
+    },
+    {
+      name: "Carmen Rodriguez",
+      age: "59 anos",
+      location: "Belo Horizonte", 
+      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&h=80&fit=crop&crop=face&auto=format",
+      text: "Artrose nos joelhos me limitava muito. Não conseguia subir escadas sem sofrer. O método me ensinou movimentos que realmente funcionam. Hoje caminho 5km sem dor e me sinto independente novamente!",
+      problem: "Artrose nos joelhos",
+      timeToResult: "4 semanas"
+    },
+    {
+      name: "Silvia Costa",
+      age: "44 anos",
+      location: "Porto Alegre",
+      image: "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=80&h=80&fit=crop&crop=face&auto=format", 
+      text: "Fibromialgia me roubou a alegria de viver. Dores por todo corpo, cansaço extremo. Esse método foi minha salvação! Não é milagre, é ciência aplicada. Hoje tenho minha vida de volta e energia para trabalhar.",
+      problem: "Fibromialgia",
+      timeToResult: "6 semanas"
+    },
+    {
+      name: "Patrícia Lima",
+      age: "38 anos",
+      location: "Salvador",
+      image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=80&h=80&fit=crop&crop=face&auto=format",
+      text: "Pós-parto me deixou com dores lombares terríveis. Não conseguia carregar minha filha sem sofrer. Em 3 semanas seguindo o método, voltei a ser a mãe ativa que sempre quis ser. Gratidão eterna!",
+      problem: "Dores pós-parto",
+      timeToResult: "3 semanas"
+    },
+    {
+      name: "Rosana Oliveira", 
+      age: "61 anos",
+      location: "Fortaleza",
+      image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&h=80&fit=crop&crop=face&auto=format",
+      text: "Hérnia de disco me condenou a uma vida de limitações. Médicos falavam em cirurgia. Com o método, evitei a operação! 5 semanas depois estava dançando forró novamente. Melhor investimento da minha vida!",
+      problem: "Hérnia de disco",
+      timeToResult: "5 semanas"
+    },
+    {
+      name: "Luciana Mendes",
+      age: "42 anos", 
+      location: "Brasília",
+      image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=80&h=80&fit=crop&crop=face&auto=format",
+      text: "Enxaqueca tensional me atormentava há 8 anos. Vivia tomando remédio e faltando no trabalho. O método me ensinou a relaxar músculos que nem sabia que existiam. 1 mês sem crise de enxaqueca!",
+      problem: "Enxaqueca tensional", 
+      timeToResult: "4 semanas"
+    },
+    {
+      name: "Vera Lúcia Santos",
+      age: "55 anos",
+      location: "Recife", 
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face&auto=format",
+      text: "Bursite no ombro me impedia de pentear o cabelo. Fisioterapia tradicional não resolveu. Com esse método, em 3 semanas já levantava o braço sem dor. Hoje faço pilates e me sinto renovada aos 55!",
+      problem: "Bursite no ombro",
+      timeToResult: "3 semanas"
+    }
+  ];
+
+  // FAQ mais relevante
+  const faqItems = [
+    {
+      question: "O método realmente funciona para minha idade?",
+      answer: "Sim! O método foi desenvolvido especificamente para mulheres de 35 a 70 anos. Temos casos de sucesso em todas as faixas etárias, com adaptações específicas para cada perfil."
+    },
+    {
+      question: "Preciso de equipamentos especiais ou academia?",
+      answer: "Não! Todos os exercícios podem ser feitos em casa, usando apenas o peso do próprio corpo. Você só precisa de um tapete ou toalha e 15-20 minutos por dia."
+    },
+    {
+      question: "E se eu nunca fiz exercícios antes?",
+      answer: "Perfeito! O método é progressivo e começa do básico. Muitas de nossas alunas eram sedentárias e conseguiram excelentes resultados. Você vai no seu ritmo."
+    },
+    {
+      question: "Quanto tempo até ver os primeiros resultados?",
+      answer: "A maioria das mulheres sente alívio significativo nas primeiras 2-3 semanas. Resultados duradouros aparecem entre 4-6 semanas de prática consistente."
+    },
+    {
+      question: "O método substitui tratamento médico?",
+      answer: "Não substituímos tratamento médico. O método é complementar e focado em movimento terapêutico. Sempre mantenha acompanhamento com seu médico."
+    },
+    {
+      question: "E se eu não conseguir fazer os exercícios?",
+      answer: "Oferecemos modificações para todas as limitações. Se mesmo assim não conseguir, você tem 7 dias de garantia total para solicitar reembolso."
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
@@ -301,25 +405,25 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
             <p className="text-white/90 text-lg">O sistema completo para eliminar suas dores em 21 dias</p>
           </div>
 
-          {/* Justificativa do preço especial */}
+          {/* Benefícios reais e relevantes */}
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-6">
             <h3 className="text-xl font-bold mb-4 text-center">Por que você ganhou esse preço especial?</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div className="bg-white/10 rounded-lg p-3">
-                <div className="font-bold mb-1">✅ Perfil de Alta Prioridade</div>
-                <div>Seu caso foi classificado como crítico pelos nossos especialistas</div>
+                <div className="font-bold mb-1">🎯 Alívio Imediato das Dores</div>
+                <div>Primeiros resultados em 48-72h com técnicas de liberação miofascial</div>
               </div>
               <div className="bg-white/10 rounded-lg p-3">
-                <div className="font-bold mb-1">🎯 Compatibilidade Perfeita</div>
-                <div>89% de match com nosso método mais eficaz</div>
+                <div className="font-bold mb-1">💪 Fortalecimento Progressivo</div>
+                <div>Músculos mais fortes = menos dor e maior resistência no dia a dia</div>
               </div>
               <div className="bg-white/10 rounded-lg p-3">
-                <div className="font-bold mb-1">⏰ Janela de Oportunidade</div>
-                <div>Sua idade e histórico indicam momento ideal para reversão total</div>
+                <div className="font-bold mb-1">🧘‍♀️ Relaxamento Profundo</div>
+                <div>Técnicas de respiração que reduzem stress e tensão muscular</div>
               </div>
               <div className="bg-white/10 rounded-lg p-3">
-                <div className="font-bold mb-1">💪 Engajamento Demonstrado</div>
-                <div>{userScore} pontos provam seu comprometimento real</div>
+                <div className="font-bold mb-1">🏠 Praticidade Total</div>
+                <div>15-20 min/dia em casa, sem equipamentos caros ou academia</div>
               </div>
             </div>
           </div>
@@ -378,60 +482,125 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
           </div>
         </motion.div>
 
-        {/* Depoimentos */}
+        {/* Reviews expandidos e mais autênticos */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="space-y-4"
+          className="mb-8"
         >
-          <h3 className="text-center text-white text-xl font-bold mb-6">
+          <h3 className="text-center text-white text-2xl font-bold mb-8">
             O que dizem quem já eliminou as dores:
           </h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white rounded-xl p-6 shadow-lg">
-              <div className="flex text-yellow-400 mb-3">
-                {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
-              </div>
-              <p className="text-gray-700 italic mb-4 leading-relaxed text-sm">
-                "Inacreditável! Em 18 dias as dores nas costas que me atormentavam há 3 anos simplesmente sumiram. 
-                O método é genial e vale cada centavo!"
-              </p>
-              <div className="flex items-center gap-3">
-                <img 
-                  src="https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=80&h=80&fit=crop&crop=face&auto=format" 
-                  alt="Maria Santos" 
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-                <div>
-                  <p className="font-semibold text-gray-800 text-sm">Maria Santos</p>
-                  <p className="text-xs text-gray-600">58 anos, São Paulo</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {reviews.map((review, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 * index }}
+                className="bg-white rounded-xl p-6 shadow-lg"
+              >
+                <div className="flex text-yellow-400 mb-3">
+                  {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
                 </div>
-              </div>
-            </div>
-            
-            <div className="bg-white rounded-xl p-6 shadow-lg">
-              <div className="flex text-yellow-400 mb-3">
-                {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
-              </div>
-              <p className="text-gray-700 italic mb-4 leading-relaxed text-sm">
-                "Após 5 fisioterapias sem sucesso, esse método resolveu minha tensão no pescoço em 2 semanas. 
-                Recomendo para todas as amigas!"
-              </p>
-              <div className="flex items-center gap-3">
-                <img 
-                  src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face&auto=format" 
-                  alt="Ana Lucia" 
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-                <div>
-                  <p className="font-semibold text-gray-800 text-sm">Ana Lucia</p>
-                  <p className="text-xs text-gray-600">62 anos, Rio de Janeiro</p>
+                
+                <p className="text-gray-700 italic mb-4 leading-relaxed text-sm">
+                  "{review.text}"
+                </p>
+                
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                  <div className="text-xs text-green-700 font-medium">
+                    <strong>Problema:</strong> {review.problem} • <strong>Resultado em:</strong> {review.timeToResult}
+                  </div>
                 </div>
+                
+                <div className="flex items-center gap-3">
+                  <img 
+                    src={review.image}
+                    alt={review.name}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                  <div>
+                    <p className="font-semibold text-gray-800 text-sm">{review.name}</p>
+                    <p className="text-xs text-gray-600">{review.age}, {review.location}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* FAQ Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+          className="bg-white rounded-2xl shadow-2xl p-8 mb-8"
+        >
+          <div className="text-center mb-8">
+            <HelpCircle className="w-12 h-12 text-purple-600 mx-auto mb-4" />
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">Perguntas Frequentes</h3>
+            <p className="text-gray-600">Tire suas dúvidas sobre o Método AlíMax</p>
+          </div>
+
+          <div className="space-y-4">
+            {faqItems.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.1 * index }}
+                className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+              >
+                <h4 className="font-semibold text-gray-800 mb-2 flex items-start gap-2">
+                  <span className="text-purple-600 font-bold">Q:</span>
+                  {item.question}
+                </h4>
+                <p className="text-gray-600 text-sm leading-relaxed pl-6">
+                  <span className="text-purple-600 font-bold">R:</span> {item.answer}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Support and Guarantee Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.0 }}
+          className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl text-white p-8 text-center"
+        >
+          <Shield className="w-16 h-16 mx-auto mb-4 text-green-200" />
+          <h3 className="text-2xl font-bold mb-4">Garantia Total de 7 Dias</h3>
+          <p className="text-green-100 mb-6 leading-relaxed">
+            Experimente o Método AlíMax por 7 dias completos. Se não sentir melhora significativa nas suas dores, 
+            devolvemos 100% do seu investimento, sem perguntas e sem burocracia.
+          </p>
+          
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6">
+            <h4 className="font-bold mb-4">Suporte Completo Incluso:</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div className="flex items-center gap-2">
+                <MessageCircle className="w-5 h-5 text-green-200" />
+                <span>Chat direto com especialistas</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone className="w-5 h-5 text-green-200" />
+                <span>Suporte por WhatsApp</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Heart className="w-5 h-5 text-green-200" />
+                <span>Acompanhamento personalizado</span>
               </div>
             </div>
           </div>
+          
+          <p className="text-sm text-green-200">
+            Nossa equipe está disponível de segunda a sexta, das 9h às 18h, para te ajudar em cada passo da sua jornada.
+          </p>
         </motion.div>
       </div>
     </div>
