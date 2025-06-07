@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, Users, Award, Star, TrendingUp } from 'lucide-react';
+import { Clock, Users, Award, Star, TrendingUp, CheckCircle, Lock } from 'lucide-react';
 import { QuizSteps } from './components/QuizSteps';
 import { QuizAnalysis } from './components/QuizAnalysis';
 import { QuizResults } from './components/QuizResults';
@@ -117,6 +117,210 @@ const GamificationDisplay: React.FC<{
           )}
         </div>
       )}
+    </motion.div>
+  );
+};
+
+// Barra de Progresso Gamificada
+const GamifiedProgress: React.FC<{ currentStep: number; totalSteps: number; userScore: number }> = ({ 
+  currentStep, 
+  totalSteps, 
+  userScore 
+}) => {
+  const progressPercentage = (currentStep / totalSteps) * 100;
+  
+  const milestones = [
+    { step: 2, icon: '🎯', title: 'Perfil Mapeado', xp: 25 },
+    { step: 4, icon: '🔍', title: 'Problema Identificado', xp: 50 },
+    { step: 6, icon: '📧', title: 'Conectada ao Sistema', xp: 75 },
+    { step: 8, icon: '⚡', title: 'Avaliação Completa', xp: 100 },
+    { step: 9, icon: '👑', title: 'Método Desbloqueado', xp: 150 }
+  ];
+  
+  return (
+    <div className="mb-6">
+      {/* Barra de progresso com marcos */}
+      <div className="relative">
+        <div className="w-full bg-white/10 rounded-full h-4 mb-4 overflow-hidden">
+          <motion.div
+            className="bg-gradient-to-r from-purple-400 via-purple-500 to-blue-500 h-4 rounded-full relative"
+            initial={{ width: 0 }}
+            animate={{ width: `${progressPercentage}%` }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            {/* Efeito de brilho */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse" />
+          </motion.div>
+        </div>
+        
+        {/* Marcos de conquista */}
+        <div className="absolute top-0 w-full flex justify-between items-center h-4">
+          {milestones.map((milestone, index) => {
+            const isCompleted = currentStep >= milestone.step;
+            const isActive = currentStep === milestone.step;
+            
+            return (
+              <motion.div
+                key={index}
+                className={`relative flex flex-col items-center`}
+                style={{ left: `${(milestone.step / totalSteps) * 100}%` }}
+                initial={{ scale: 0 }}
+                animate={{ scale: isCompleted ? 1 : 0.7 }}
+                transition={{ delay: index * 0.2 }}
+              >
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm border-2 transition-all ${
+                  isCompleted 
+                    ? 'bg-yellow-400 border-yellow-300 text-gray-800 shadow-lg' 
+                    : 'bg-gray-600 border-gray-500 text-gray-300'
+                }`}>
+                  {milestone.icon}
+                </div>
+                
+                {isActive && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="absolute top-10 bg-white/90 text-gray-800 px-3 py-1 rounded-lg text-xs font-bold whitespace-nowrap shadow-lg"
+                  >
+                    {milestone.title}
+                    <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white/90 rotate-45" />
+                  </motion.div>
+                )}
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+      
+      {/* Status atual */}
+      <div className="flex justify-between items-center text-sm text-white/80">
+        <span>Passo {currentStep} de {totalSteps}</span>
+        <span className="flex items-center gap-1">
+          <Star className="w-4 h-4 text-yellow-400" />
+          {userScore} XP conquistados
+        </span>
+      </div>
+    </div>
+  );
+};
+
+// Sistema de Competição Social
+const SocialCompetition: React.FC<{ userScore: number }> = ({ userScore }) => {
+  const [leaderboard, setLeaderboard] = useState([
+    { name: "Ana L.", score: 285, position: 1 },
+    { name: "Maria S.", score: 270, position: 2 },
+    { name: "Carmen R.", score: 255, position: 3 },
+    { name: "Você", score: userScore, position: 0 }
+  ]);
+  
+  const [rewards, setRewards] = useState([
+    { 
+      threshold: 100, 
+      reward: "Desconto R$ 2,00", 
+      unlocked: userScore >= 100,
+      icon: "💰"
+    },
+    { 
+      threshold: 200, 
+      reward: "Bônus: Guia Express", 
+      unlocked: userScore >= 200,
+      icon: "📚"
+    },
+    { 
+      threshold: 250, 
+      reward: "Acesso ao Grupo VIP", 
+      unlocked: userScore >= 250,
+      icon: "👑"
+    }
+  ]);
+  
+  // Calcular posição do usuário
+  const userPosition = leaderboard
+    .sort((a, b) => b.score - a.score)
+    .findIndex(user => user.name === "Você") + 1;
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-6"
+    >
+      <h3 className="text-white font-bold text-lg mb-4 text-center">
+        🏆 Ranking das Mais Determinadas
+      </h3>
+      
+      {/* Mini leaderboard */}
+      <div className="space-y-2 mb-6">
+        {leaderboard
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 4)
+          .map((user, index) => (
+            <div
+              key={index}
+              className={`flex items-center justify-between p-3 rounded-lg ${
+                user.name === "Você" 
+                  ? 'bg-yellow-400/20 border border-yellow-400/30' 
+                  : 'bg-white/5'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold ${
+                  index === 0 ? 'bg-yellow-400 text-gray-800' :
+                  index === 1 ? 'bg-gray-300 text-gray-800' :
+                  index === 2 ? 'bg-orange-400 text-gray-800' :
+                  'bg-purple-400 text-white'
+                }`}>
+                  {index + 1}
+                </div>
+                <span className={`font-medium ${
+                  user.name === "Você" ? 'text-yellow-300' : 'text-white'
+                }`}>
+                  {user.name}
+                </span>
+              </div>
+              <span className="text-white/80 font-bold">{user.score} pts</span>
+            </div>
+          ))}
+      </div>
+      
+      {/* Sistema de recompensas */}
+      <div className="border-t border-white/20 pt-4">
+        <h4 className="text-white/90 font-medium mb-3">🎁 Suas Recompensas:</h4>
+        <div className="space-y-2">
+          {rewards.map((reward, index) => (
+            <div
+              key={index}
+              className={`flex items-center justify-between p-2 rounded-lg text-sm ${
+                reward.unlocked 
+                  ? 'bg-green-500/20 border border-green-400/30' 
+                  : 'bg-gray-500/20'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-lg">{reward.icon}</span>
+                <span className={reward.unlocked ? 'text-green-300' : 'text-gray-400'}>
+                  {reward.reward}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-white/60">{reward.threshold} pts</span>
+                {reward.unlocked ? (
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                ) : (
+                  <Lock className="w-4 h-4 text-gray-400" />
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      {/* Próximo objetivo */}
+      <div className="mt-4 text-center">
+        <p className="text-white/80 text-sm">
+          🎯 Próximo objetivo: {rewards.find(r => !r.unlocked)?.threshold || 300} pontos
+        </p>
+      </div>
     </motion.div>
   );
 };
@@ -654,6 +858,13 @@ function App() {
             onUpdate={setGamificationState}
           />
           
+          {/* Progresso Gamificado */}
+          <GamifiedProgress 
+            currentStep={currentStep + 1}
+            totalSteps={9}
+            userScore={userScore}
+          />
+          
           <div className="flex items-center justify-between mb-3">
             <div className="text-sm text-white/80">Pergunta {currentStep + 1} de 9</div>
             <div className="flex items-center gap-3">
@@ -665,16 +876,6 @@ function App() {
                 Plano personalizado
               </div>
             </div>
-          </div>
-          
-          {/* Barra de progresso com gradiente */}
-          <div className="w-full bg-white/10 rounded-full h-3 mb-3 overflow-hidden">
-            <motion.div
-              className="bg-gradient-to-r from-purple-400 via-purple-500 to-blue-500 h-3 rounded-full shadow-lg"
-              initial={{ width: 0 }}
-              animate={{ width: `${((currentStep + 1) / 9) * 100}%` }}
-              transition={{ duration: 0.5 }}
-            />
           </div>
           
           {/* Timer de urgência */}
@@ -698,6 +899,9 @@ function App() {
 
       {/* Conteúdo principal */}
       <div className="max-w-3xl mx-auto px-4 py-12">
+        {/* Sistema de Competição Social */}
+        <SocialCompetition userScore={userScore} />
+        
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}
