@@ -251,31 +251,38 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
-      {/* Header compacto */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 py-3">
-          <div className="flex items-center justify-between mb-2">
-            <div className="text-sm text-gray-600">Pergunta {currentStep + 1} de 9</div>
-            <div className="flex items-center gap-2">
-              <div className="text-sm text-purple-600 font-bold">🎯 {userScore} pontos</div>
-              <div className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+      {/* Header harmonioso com o design */}
+      <div className="bg-gradient-to-r from-slate-800/90 via-blue-800/90 to-slate-700/90 backdrop-blur-sm border-b border-white/10 shadow-lg">
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-sm text-white/80">Pergunta {currentStep + 1} de 9</div>
+            <div className="flex items-center gap-3">
+              <div className="text-sm text-yellow-300 font-bold flex items-center gap-1">
+                <span className="text-yellow-400">🎯</span>
+                {userScore} pontos
+              </div>
+              <div className="text-xs bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full border border-emerald-400/30">
                 Plano personalizado
               </div>
             </div>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          
+          {/* Barra de progresso com gradiente */}
+          <div className="w-full bg-white/10 rounded-full h-3 mb-3 overflow-hidden">
             <motion.div
-              className="bg-purple-600 h-2 rounded-full"
+              className="bg-gradient-to-r from-purple-400 via-purple-500 to-blue-500 h-3 rounded-full shadow-lg"
               initial={{ width: 0 }}
               animate={{ width: `${((currentStep + 1) / 9) * 100}%` }}
               transition={{ duration: 0.5 }}
             />
           </div>
+          
+          {/* Timer de urgência */}
           {timeLeft < 300 && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-2 mt-2">
-              <div className="flex items-center justify-center gap-2 text-red-700 text-xs">
-                <Clock className="w-3 h-3" />
-                <span className="font-medium">Oferta expira em: {formatTime(timeLeft)}</span>
+            <div className="bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-400/30 rounded-lg p-3 backdrop-blur-sm">
+              <div className="flex items-center justify-center gap-2 text-red-200 text-sm">
+                <Clock className="w-4 h-4 text-red-300" />
+                <span className="font-medium">Oferta expira em: <span className="text-red-100 font-bold">{formatTime(timeLeft)}</span></span>
               </div>
             </div>
           )}
