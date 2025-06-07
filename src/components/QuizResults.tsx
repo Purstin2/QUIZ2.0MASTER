@@ -25,7 +25,8 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
 
   const handlePurchaseClick = () => {
     trackPurchaseIntent(finalPrice);
-    // Here you would redirect to payment or open payment modal
+    // Redirect to payment page
+    window.open('https://pay.kirvano.com/3e8ceecb-0d43-4640-9f44-07643fbc0aff', '_blank');
   };
 
   const formatTime = (seconds: number) => {
