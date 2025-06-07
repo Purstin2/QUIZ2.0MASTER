@@ -99,30 +99,11 @@ export const trackQuizStart = () => {
   });
 };
 
-export const trackQuizProgress = (step: number, totalSteps: number) => {
-  const progress = Math.round((step / totalSteps) * 100);
-  trackPixelEvent('AddToCart', {
-    content_name: `Quiz Progresso ${progress}%`,
-    content_category: 'Quiz Progress',
-    value: progress,
-    currency: 'BRL'
-  });
-};
-
 export const trackEmailCapture = (email: string) => {
   trackPixelEvent('Lead', {
     content_name: 'Email Capturado',
     content_category: 'Lead Generation',
     value: 19.90,
-    currency: 'BRL'
-  });
-};
-
-export const trackQuizComplete = (userScore: number) => {
-  trackPixelEvent('CompleteRegistration', {
-    content_name: 'Quiz Completo',
-    content_category: 'Quiz Completion',
-    value: userScore,
     currency: 'BRL'
   });
 };

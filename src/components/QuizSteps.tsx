@@ -79,7 +79,7 @@ const EmotionalPainSlider: React.FC<{
     <div className="space-y-8">
       {/* Exibição visual da dor atual */}
       <motion.div 
-        className="text-center p-8 rounded-2xl bg-gradient-to-br from-white to-gray-50 shadow-lg"
+        className="text-center p-8 rounded-2xl bg-white shadow-lg"
         animate={{ scale: painLevel > 5 ? [1, 1.02, 1] : 1 }}
         transition={{ duration: 2, repeat: painLevel > 7 ? Infinity : 0 }}
       >
@@ -96,10 +96,10 @@ const EmotionalPainSlider: React.FC<{
       
       {/* Slider interativo com zonas de cor */}
       <div className="relative px-4">
-        <div ref={trackRef} className="relative h-8 bg-gradient-to-r from-green-200 via-yellow-300 via-orange-400 to-red-600 rounded-full shadow-inner">
+        <div ref={trackRef} className="relative h-8 bg-gradient-to-r from-purple-200 via-purple-300 via-purple-400 to-purple-500 rounded-full shadow-inner">
           {/* A bolinha com o emoji AGORA é o único elemento arrastável e visível */}
           <motion.div
-            className="absolute top-1/2 w-8 h-8 bg-white rounded-full shadow-lg border-4 border-purple-500 transform -translate-y-1/2 flex items-center justify-center cursor-grab" // Removendo -translate-x-1/2
+            className="absolute top-1/2 w-8 h-8 bg-white rounded-full shadow-lg border-4 border-purple-800 transform -translate-y-1/2 flex items-center justify-center cursor-grab" // Removendo -translate-x-1/2
             style={{ x }} // Controla a posição X diretamente com o motion value
             whileHover={{ scale: 1.2 }}
             whileTap={{ scale: 0.9 }}
@@ -128,9 +128,9 @@ const EmotionalPainSlider: React.FC<{
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-red-50 border border-red-200 p-4 rounded-lg"
+          className="bg-purple-50 border border-purple-200 p-4 rounded-lg"
         >
-          <p className="text-red-800 font-medium text-center">
+          <p className="text-purple-800 font-medium text-center">
             ⚠️ Dor nível {painLevel} indica necessidade de atenção imediata
           </p>
         </motion.div>
@@ -138,7 +138,7 @@ const EmotionalPainSlider: React.FC<{
       
       <button
         onClick={() => onAnswer('painLevel', painLevel)}
-        className={`w-full text-white font-bold py-4 px-8 rounded-xl text-lg transition-all shadow-lg bg-gradient-to-r ${currentLevel.color} hover:shadow-xl transform hover:scale-105`}
+        className={`w-full text-white font-bold py-4 px-8 rounded-xl text-lg transition-all shadow-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:shadow-xl transform hover:scale-105`}
       >
          {currentLevel.label}
       </button>
@@ -175,13 +175,13 @@ const TrustIndicators: React.FC = () => {
   return (
     <div className="mt-8 space-y-4">
       {/* Selos de segurança */}
-      <div className="flex justify-center items-center gap-6 text-sm text-white/70">
+      <div className="flex justify-center items-center gap-6 text-sm text-gray-700">
         <div className="flex items-center gap-2">
-          <Shield className="w-5 h-5 text-green-400" />
+          <Shield className="w-5 h-5 text-purple-400" />
           <span>SSL Seguro</span>
         </div>
         <div className="flex items-center gap-2">
-          <CheckCircle className="w-5 h-5 text-blue-400" />
+          <CheckCircle className="w-5 h-5 text-purple-400" />
           <span>CNPJ Verificado</span>
         </div>
         <div className="flex items-center gap-2">
@@ -191,22 +191,22 @@ const TrustIndicators: React.FC = () => {
       </div>
       
       {/* Indicador de privacidade */}
-      <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center">
+      <div className="bg-purple-100 backdrop-blur-sm rounded-lg p-4 text-center border border-purple-200">
         <div className="flex items-center justify-center gap-2 mb-2">
-          <Lock className="w-5 h-5 text-green-400" />
-          <span className="font-medium text-white">Seus dados estão protegidos</span>
+          <Lock className="w-5 h-5 text-purple-600" />
+          <span className="font-medium text-purple-800">Seus dados estão protegidos</span>
         </div>
-        <p className="text-white/70 text-xs">
+        <p className="text-purple-700 text-xs">
           Utilizamos criptografia SSL 256-bits e não compartilhamos informações pessoais
         </p>
       </div>
       
       {/* Certificações */}
       <div className="flex justify-center gap-4">
-        <div className="bg-white/10 px-3 py-2 rounded-lg text-xs text-white/80">
+        <div className="bg-purple-100 px-3 py-2 rounded-lg text-xs text-purple-800 border border-purple-200">
           🏥 Método Aprovado por Fisioterapeutas
         </div>
-        <div className="bg-white/10 px-3 py-2 rounded-lg text-xs text-white/80">
+        <div className="bg-purple-100 px-3 py-2 rounded-lg text-xs text-purple-800 border border-purple-200">
           📜 Registro CNPJ: 12.345.678/0001-90
         </div>
       </div>
@@ -427,4 +427,15 @@ export const QuizSteps: React.FC<QuizStepsProps> = ({
   }
 
   return <div>Carregando...</div>;
+};
+
+// Determinando a cor do progresso da barra com base no score
+const getProgressBarColor = (score: number) => {
+  if (score < 30) return 'bg-gray-500';
+  if (score < 60) return 'bg-yellow-500';
+  return 'bg-purple-700';
+};
+
+const renderInput = () => {
+  // ... existing code ...
 };
